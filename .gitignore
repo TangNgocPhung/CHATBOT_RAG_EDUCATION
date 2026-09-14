@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local secrets and machine-specific settings
+khoa_api.bat
+cai_dat.json
+.env
+.env.*
+!.env.example
+
+# Private source documents and generated indexes
+ollama-rag-desktop/data_giao_duc/
+ollama-rag-desktop/_extraction_duplicates/
+faiss_index_data_giao_duc/
+faiss_index_giaoduc_ollama/
+ocr_cache/
+transcripts/
+tep_dinh_kem/
+tessdata/
+
+# Generated manifests, metadata, caches, and chat history
+drive_manifest.json
+drive_state.json
+data_giao_duc_da_xu_ly.json
+file_da_xu_ly.json
+phan_loai_tai_lieu.json
+tinh_trang_hieu_luc.json
+ho_so_van_ban.json
+meta_llm.json
+cache_cau_tra_loi.json
+ket_qua_benchmark*.json
+*.db
+*.db-shm
+*.db-wal
+
+# Local tooling and temporary files
+.claude/
+*.tmp
+*.tmp.*
+*AppDataLocalTemp*
+

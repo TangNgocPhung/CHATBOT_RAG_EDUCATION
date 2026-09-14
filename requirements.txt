@@ -1,0 +1,26 @@
+langchain-ollama
+langchain-community
+langchain-text-splitters
+faiss-cpu
+unstructured
+pypdf
+docx2txt
+python-pptx
+rank_bm25
+openpyxl
+xlrd
+pandas
+tqdm
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+requests>=2.32,<3
+trafilatura>=2,<3
+pydantic>=2.7,<3
+# Phiên âm video/âm thanh, chạy offline. Tự giải mã audio bằng PyAV nên KHÔNG
+# cần cài ffmpeg riêng.
+faster-whisper>=1.1,<2
+# Chỉ dùng trên Windows, để đọc file .doc đời cũ qua Microsoft Word (COM).
+# Máy không có Word thì bỏ qua dòng này và cài LibreOffice thay thế.
+pywin32>=306; sys_platform == "win32"
+# Render trang PDF thành ảnh cho OCR (thư viện Python thuần, không cần poppler).
+pypdfium2>=4,<6
