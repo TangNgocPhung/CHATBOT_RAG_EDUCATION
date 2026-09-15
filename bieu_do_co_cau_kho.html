@@ -1,0 +1,455 @@
+<meta charset="utf-8">
+<title>Cơ cấu kho 713 tài liệu</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Be+Vietnam+Pro:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --ground:      #f4f6f8;
+    --panel:       #ffffff;
+    --panel-sunk:  #eef1f5;
+    --ink:         #101720;
+    --ink-2:       #4d5a68;
+    --ink-3:       #7d8a97;
+    --rule:        #dfe5ec;
+    --rule-soft:   #ecf0f4;
+    --hoclieu:     #2a78d6;
+    --vanban:      #eb6834;
+    --accent-3:    #1baf7a;
+    --track:       #e6eaef;
+    --shadow:      0 1px 2px rgba(16,23,32,.05), 0 8px 24px -16px rgba(16,23,32,.25);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground:     #14181d;
+      --panel:      #1b2026;
+      --panel-sunk: #22282f;
+      --ink:        #f2f5f8;
+      --ink-2:      #b3bec9;
+      --ink-3:      #838f9b;
+      --rule:       #2d353e;
+      --rule-soft:  #252c34;
+      --hoclieu:    #3987e5;
+      --vanban:     #d95926;
+      --accent-3:   #199e70;
+      --track:      #2a323a;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:     #14181d;
+    --panel:      #1b2026;
+    --panel-sunk: #22282f;
+    --ink:        #f2f5f8;
+    --ink-2:      #b3bec9;
+    --ink-3:      #838f9b;
+    --rule:       #2d353e;
+    --rule-soft:  #252c34;
+    --hoclieu:    #3987e5;
+    --vanban:     #d95926;
+    --accent-3:   #199e70;
+    --track:      #2a323a;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 40px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* ---------- Đầu trang ---------- */
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: Newsreader, Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 12px;
+  }
+  .dek {
+    max-width: 62ch;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .tot { display: flex; align-items: baseline; gap: 8px; }
+  .tot b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+  }
+  .tot span { color: var(--ink-2); font-size: 13.5px; }
+
+  /* ---------- Khối biểu đồ ---------- */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 24px 22px 20px;
+  }
+  .panel-head { margin-bottom: 20px; }
+  h2 {
+    font-family: Newsreader, Georgia, serif;
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: -.005em;
+    margin: 0 0 4px;
+  }
+  .sub { color: var(--ink-3); font-size: 13px; margin: 0; }
+
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+
+  /* ---------- Thanh chia hai nhóm ---------- */
+  .split { display: flex; gap: 2px; height: 34px; }
+  .split i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    cursor: default;
+  }
+  .split-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    margin-top: 14px;
+  }
+  .key { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--ink-2); }
+  .dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .key b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ---------- Bảng thanh ngang ---------- */
+  .bars { display: flex; flex-direction: column; gap: 9px; }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(96px, 168px) minmax(0, 1fr) 84px;
+    align-items: center;
+    gap: 12px;
+  }
+  .row .lab {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+  .track { background: var(--track); border-radius: 3px; height: 15px; position: relative; }
+  .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 3px 4px 4px 3px;
+    min-width: 3px;
+    cursor: default;
+  }
+  .val {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    color: var(--ink);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .val em { font-style: normal; color: var(--ink-3); font-size: 11.5px; margin-left: 5px; }
+
+  .grouphead {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 6px 0 2px;
+    font-size: 11px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .grouphead:first-child { margin-top: 0; }
+  .grouphead .ln { flex: 1; height: 1px; background: var(--rule-soft); }
+
+  /* ---------- Bảng số liệu ---------- */
+  details {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 22px;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  summary:focus-visible { outline: 2px solid var(--hoclieu); outline-offset: 3px; border-radius: 4px; }
+  .tablewrap { overflow-x: auto; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule-soft); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 190px; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+  }
+  tbody td { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  tbody td:first-child { font-family: "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  tr.sum td { font-weight: 600; color: var(--ink); border-top: 1px solid var(--rule); border-bottom: none; }
+  .z { color: var(--ink-3); opacity: .45; }
+
+  footer {
+    font-size: 12.5px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+  }
+  footer code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    background: var(--panel-sunk);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* ---------- Chú giải di chuột ---------- */
+  #tip {
+    position: fixed;
+    z-index: 9;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .12s ease;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    box-shadow: var(--shadow);
+    padding: 8px 11px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    max-width: 260px;
+  }
+  #tip b { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  #tip .t { display: block; color: var(--ink-2); }
+  @media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Kho tri thức · Chatbot RAG Giáo dục</p>
+    <h1>713 tài liệu trong kho: định dạng nào, thể loại gì</h1>
+    <p class="dek">
+      Toàn bộ tệp nguồn đang nằm trong kho tại thời điểm khảo sát. Thể loại được xác định từ tên
+      tệp và hồ sơ văn bản đã trích xuất (số hiệu, loại văn bản, cơ quan ban hành).
+    </p>
+    <div class="totals">
+      <div class="tot"><b>713</b><span>tệp trong kho</span></div>
+      <div class="tot"><b>426</b><span>tệp PDF (59,7%)</span></div>
+      <div class="tot"><b>193</b><span>tệp Word — DOCX + DOC (27,1%)</span></div>
+      <div class="tot"><b>100</b><span>đã lập chỉ mục · 613 chờ cập nhật</span></div>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Hai nhóm nội dung</h2>
+      <p class="sub">Học liệu phục vụ dạy — học so với văn bản pháp quy, hành chính về giáo dục</p>
+    </div>
+    <div class="split">
+      <i data-tip="Học liệu dạy học · 528 tệp · 74,1% kho" style="flex:528;background:var(--hoclieu)"></i>
+      <i data-tip="Văn bản pháp quy &amp; hành chính · 185 tệp · 25,9% kho" style="flex:185;background:var(--vanban)"></i>
+    </div>
+    <div class="split-key">
+      <span class="key"><i class="dot" style="background:var(--hoclieu)"></i>Học liệu dạy học <b>528</b> · 74,1%</span>
+      <span class="key"><i class="dot" style="background:var(--vanban)"></i>Văn bản pháp quy &amp; hành chính <b>185</b> · 25,9%</span>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Định dạng tệp</h2>
+        <p class="sub">713 tệp · PDF chiếm gần ba phần năm kho</p>
+      </div>
+      <div class="bars" id="ext"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Thể loại tài liệu</h2>
+        <p class="sub">Màu thanh cho biết tài liệu thuộc nhóm học liệu hay nhóm văn bản</p>
+      </div>
+      <div class="bars" id="kind"></div>
+    </section>
+  </div>
+
+  <details>
+    <summary>Bảng số liệu đầy đủ — thể loại × định dạng</summary>
+    <div class="tablewrap"><table id="tbl">
+      <thead><tr><th>Thể loại</th><th>PDF</th><th>DOCX</th><th>DOC</th><th>PPTX</th><th>XLSX</th><th>XLS</th><th>MP4</th><th>Tổng</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </details>
+
+  <footer>
+    Nguồn: kho tài liệu của hệ thống, đọc trực tiếp qua <code>/api/documents</code> ngày 15/9/2026.
+    Nhóm “Học liệu khác &amp; biểu mẫu” gồm phiếu, đơn, bài tập dự án, tài liệu chuyên đề chưa xếp được vào các thể loại trên.
+  </footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+  var TOTAL = 713;
+
+  var EXT = [
+    { lab: "PDF",  n: 426 },
+    { lab: "DOCX", n: 164 },
+    { lab: "PPTX", n: 72 },
+    { lab: "DOC",  n: 29 },
+    { lab: "XLSX", n: 13 },
+    { lab: "MP4",  n: 5 },
+    { lab: "XLS",  n: 4 }
+  ];
+
+  var KINDS = [
+    { g: "hoclieu", lab: "Sách giáo khoa &amp; SBT", n: 302, d: "PDF 302" },
+    { g: "hoclieu", lab: "Kế hoạch bài dạy &amp; bài giảng", n: 151, d: "DOCX 79 · PPTX 72" },
+    { g: "hoclieu", lab: "Học liệu khác &amp; biểu mẫu", n: 26, d: "DOCX 21 · PDF 3 · DOC 2" },
+    { g: "hoclieu", lab: "Chương trình &amp; kế hoạch dạy học", n: 16, d: "DOCX 11 · XLSX 3 · PDF 2" },
+    { g: "hoclieu", lab: "Danh sách, thời khoá biểu", n: 13, d: "XLSX 9 · XLS 4" },
+    { g: "hoclieu", lab: "Sổ tay &amp; tài liệu hướng dẫn", n: 8, d: "DOCX 6 · DOC 1 · PDF 1" },
+    { g: "hoclieu", lab: "Đề kiểm tra &amp; ma trận đặc tả", n: 7, d: "DOCX 6 · XLSX 1" },
+    { g: "hoclieu", lab: "Video bài giảng", n: 5, d: "MP4 5" },
+    { g: "vanban", lab: "Thông tư", n: 108, d: "PDF 54 · DOCX 32 · DOC 22" },
+    { g: "vanban", lab: "Nghị định", n: 28, d: "PDF 18 · DOCX 8 · DOC 2" },
+    { g: "vanban", lab: "Quyết định", n: 24, d: "PDF 24" },
+    { g: "vanban", lab: "Văn bản khác của Bộ, ngành", n: 9, d: "PDF 9" },
+    { g: "vanban", lab: "Công văn, thông báo", n: 6, d: "PDF 4 · DOC 2" },
+    { g: "vanban", lab: "Chỉ thị", n: 4, d: "PDF 4" },
+    { g: "vanban", lab: "Nghị quyết", n: 4, d: "PDF 3 · DOCX 1" },
+    { g: "vanban", lab: "Luật", n: 2, d: "PDF 2" }
+  ];
+
+  var TABLE = [
+    ["Sách giáo khoa & SBT",            302, 0, 0, 0, 0, 0, 0],
+    ["Kế hoạch bài dạy & bài giảng",      0, 79, 0, 72, 0, 0, 0],
+    ["Học liệu khác & biểu mẫu",          3, 21, 2, 0, 0, 0, 0],
+    ["Chương trình & kế hoạch dạy học",   2, 11, 0, 0, 3, 0, 0],
+    ["Danh sách, thời khoá biểu",         0, 0, 0, 0, 9, 4, 0],
+    ["Sổ tay & tài liệu hướng dẫn",       1, 6, 1, 0, 0, 0, 0],
+    ["Đề kiểm tra & ma trận đặc tả",      0, 6, 0, 0, 1, 0, 0],
+    ["Video bài giảng",                   0, 0, 0, 0, 0, 0, 5],
+    ["Thông tư",                         54, 32, 22, 0, 0, 0, 0],
+    ["Nghị định",                        18, 8, 2, 0, 0, 0, 0],
+    ["Quyết định",                       24, 0, 0, 0, 0, 0, 0],
+    ["Văn bản khác của Bộ, ngành",        9, 0, 0, 0, 0, 0, 0],
+    ["Công văn, thông báo",               4, 0, 2, 0, 0, 0, 0],
+    ["Chỉ thị",                           4, 0, 0, 0, 0, 0, 0],
+    ["Nghị quyết",                        3, 1, 0, 0, 0, 0, 0],
+    ["Luật",                              2, 0, 0, 0, 0, 0, 0]
+  ];
+
+  function pct(n) { return (n * 100 / TOTAL).toFixed(1).replace(".", ",") + "%"; }
+
+  function bar(lab, n, max, color, tip) {
+    return '<div class="row">' +
+             '<span class="lab">' + lab + '</span>' +
+             '<span class="track"><i class="fill" data-tip="' + tip + '" style="width:' +
+               (n / max * 100).toFixed(2) + '%;background:' + color + '"></i></span>' +
+             '<span class="val">' + n + '<em>' + pct(n) + '</em></span>' +
+           '</div>';
+  }
+
+  var maxExt = EXT[0].n, html = "";
+  EXT.forEach(function (e) {
+    html += bar(e.lab, e.n, maxExt, "var(--hoclieu)", e.lab + " · " + e.n + " tệp · " + pct(e.n) + " kho");
+  });
+  document.getElementById("ext").innerHTML = html;
+
+  var maxKind = KINDS[0].n, out = "", lastG = "";
+  var GNAME = { hoclieu: "Học liệu dạy học · 528 tệp", vanban: "Văn bản pháp quy &amp; hành chính · 185 tệp" };
+  KINDS.forEach(function (k) {
+    if (k.g !== lastG) {
+      out += '<div class="grouphead"><i class="dot" style="background:var(--' + k.g + ')"></i>' +
+             GNAME[k.g] + '<i class="ln"></i></div>';
+      lastG = k.g;
+    }
+    out += bar(k.lab, k.n, maxKind, "var(--" + k.g + ")",
+               k.lab.replace(/&amp;/g, "&") + " · " + k.n + " tệp · " + pct(k.n) + " kho|" + k.d);
+  });
+  document.getElementById("kind").innerHTML = out;
+
+  var tb = document.querySelector("#tbl tbody"), trows = "", sums = [0, 0, 0, 0, 0, 0, 0, 0];
+  TABLE.forEach(function (r) {
+    var tot = 0;
+    var cells = r.slice(1).map(function (v, i) { tot += v; sums[i] += v; return '<td' + (v ? '' : ' class="z"') + '>' + (v || "–") + '</td>'; }).join("");
+    sums[7] += tot;
+    trows += "<tr><td>" + r[0] + "</td>" + cells + "<td>" + tot + "</td></tr>";
+  });
+  trows += '<tr class="sum"><td>Tổng</td>' + sums.map(function (v) { return "<td>" + v + "</td>"; }).join("") + "</tr>";
+  tb.innerHTML = trows;
+
+  var tip = document.getElementById("tip");
+  function show(e) {
+    var el = e.target.closest("[data-tip]");
+    if (!el) return;
+    var parts = el.getAttribute("data-tip").split("|");
+    tip.innerHTML = "<b>" + parts[0] + "</b>" + (parts[1] ? '<span class="t">' + parts[1] + "</span>" : "");
+    tip.style.opacity = "1";
+    move(e);
+  }
+  function move(e) {
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - w - 10) + "px";
+    tip.style.top = Math.max(8, e.clientY - h - 12) + "px";
+  }
+  document.addEventListener("mouseover", show);
+  document.addEventListener("mousemove", function (e) { if (tip.style.opacity === "1") { if (e.target.closest("[data-tip]")) move(e); else tip.style.opacity = "0"; } });
+  document.addEventListener("mouseleave", function () { tip.style.opacity = "0"; });
+</script>

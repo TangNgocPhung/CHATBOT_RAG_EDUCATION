@@ -28,6 +28,19 @@ SO_KET_QUA_CUOI = int(os.getenv("RAG_SO_BANG_CHUNG", "4"))  # chunk đưa vào p
 # 4 thay vì 5: chunk thứ 5 hiếm khi đổi được câu trả lời nhưng luôn cộng thêm
 # ~400 token prompt, tức khoảng 15 giây chờ trên CPU.
 RRF_K = 60                       # hằng số chuẩn trong công thức RRF
+# Trọng số các tín hiệu cộng thêm vào điểm RRF khi rerank. Đặt trong bối cảnh:
+# điểm RRF của một chunk nằm trong khoảng 0.013 (hạng cuối, một retriever) tới
+# 0.033 (hạng đầu ở cả hai retriever), nên một tín hiệu 0.035 đủ sức lật toàn
+# bộ thứ tự - chỉnh mấy số này phải đo lại bằng `benchmark_chatbot.py --ir`.
+TRONG_SO_NOI_DUNG = 0.025        # độ phủ từ khóa trong nội dung chunk
+TRONG_SO_TIEU_DE = 0.035         # độ phủ từ khóa trong tên tài liệu, đếm trần
+TRONG_SO_TIEU_DE_IDF = 0.040     # cũng là tên tài liệu, nhưng cân theo IDF
+# Vì sao giữ CẢ HAI tín hiệu tên tài liệu thay vì thay đếm trần bằng IDF: quét
+# trọng số trên 97 câu có nhãn cho thấy bỏ hẳn tín hiệu đếm làm nhóm văn bản
+# pháp quy tụt Hit@1 từ 86% xuống 82% (tên văn bản dài, mọi từ đều phổ biến nên
+# IDF chấm gần như bằng nhau), còn giữ cả hai thì nhóm đó lên 88% mà nhóm slide
+# và bảng vẫn hưởng trọn phần cải thiện. Cặp số này nằm giữa một vùng phẳng
+# (0.030-0.045 cho cả hai đều ra cùng kết quả), không phải một đỉnh nhọn.
 SO_CHUNK_TOI_DA_MOI_NGUON = 2
 # Khi có lọc phạm vi thì rổ ứng viên phải rộng ra trước khi lọc (xem
 # truy_hoi_hybrid). 6 lần là mức đủ để một môn hẹp vẫn còn ứng viên mà tìm
@@ -250,9 +263,45 @@ def rrf_fusion(*danh_sach_ket_qua, k=RRF_K):
     return ket_qua_cuoi
 
 
-def xep_hang_theo_lien_quan(cau_hoi, documents, so_ket_qua):
-    """Rerank theo độ phủ từ khóa, tiêu đề và đa dạng nguồn."""
+def _do_phu_tieu_de_idf(tu_cau_hoi_co_dau, tu_tieu_de, tu_vung) -> float | None:
+    """
+    Phần SỨC NẶNG của câu hỏi nằm trong tên tài liệu, cân theo IDF.
+
+    Đếm từ trần coi "thời", "khóa", "biểu", "năm", "học" ngang giá với "k35",
+    "hp3", "260tb" - trong khi năm từ đầu có mặt ở hàng nghìn chunk còn năm từ
+    sau chỉ có ở đúng tài liệu người dùng đang hỏi. Hệ quả đo được: câu "Lịch
+    học học phần 3 khóa 35" xếp "SO TAY SINH VIEN K51.docx" trên
+    "Thoi-khoa-bieu-HP3-K35-web.xlsx", vì sổ tay dài nên chứa đủ các từ phổ
+    biến kia.
+
+    Trả về None khi chưa dựng được từ vựng kho, để bên gọi lùi về cách đếm cũ.
+    """
+    if tu_vung is None or not tu_cau_hoi_co_dau:
+        return None
+    tong = sum(tu_vung.idf(t) for t in tu_cau_hoi_co_dau)
+    if tong <= 0:
+        return None
+    # Tra IDF bằng từ CÓ DẤU (dạng mà từ vựng kho đếm), nhưng đối chiếu khớp
+    # bằng cả biến thể không dấu: tên file trong kho hầu hết viết không dấu, mà
+    # một từ kho chưa từng thấy lại nhận IDF trần - lấy IDF của "hoc" thay cho
+    # "học" là tự bơm trọng số cho một từ hết sức phổ biến.
+    phu = sum(
+        tu_vung.idf(t) for t in tu_cau_hoi_co_dau
+        if t in tu_tieu_de or bo_dau(t) in tu_tieu_de
+    )
+    return phu / tong
+
+
+def xep_hang_theo_lien_quan(cau_hoi, documents, so_ket_qua, tu_vung=None):
+    """
+    Rerank theo độ phủ từ khóa, tiêu đề và đa dạng nguồn.
+
+    `tu_vung` là TuVungKho để chấm khớp tên tài liệu theo IDF thay vì đếm từ
+    trần; để None thì lùi về cách đếm cũ (các test cũ và mọi lời gọi chưa có
+    từ vựng vẫn chạy nguyên như trước).
+    """
     tu_cau_hoi = set(mo_rong_truy_van(tach_tu_mo_rong(cau_hoi), cau_hoi))
+    tu_cau_hoi_co_dau = [t for t in tach_tu_tieng_viet(cau_hoi) if len(t) >= 2]
     cau_hoi_chuan = " ".join(tach_tu_tieng_viet(cau_hoi))
     for doc in documents:
         tu_noi_dung = set(tach_tu_mo_rong(doc.page_content))
@@ -266,6 +315,9 @@ def xep_hang_theo_lien_quan(cau_hoi, documents, so_ket_qua):
         tu_tieu_de = set(tach_tu_mo_rong(tieu_de_day_du))
         do_phu = len(tu_cau_hoi & tu_noi_dung) / max(1, len(tu_cau_hoi))
         do_phu_tieu_de = len(tu_cau_hoi & tu_tieu_de) / max(1, len(tu_cau_hoi))
+        do_phu_tieu_de_idf = _do_phu_tieu_de_idf(
+            tu_cau_hoi_co_dau, tu_tieu_de, tu_vung
+        )
         dong_thuan = 1.0 if doc.metadata.get("_nguon") == "bm25+dense" else 0.0
         ma_khoa = set(re.findall(r"\bk\d+\b", " ".join(tu_tieu_de)))
         phat_lech_pham_vi = 0.012 if any(ma not in cau_hoi_chuan for ma in ma_khoa) else 0.0
@@ -276,8 +328,9 @@ def xep_hang_theo_lien_quan(cau_hoi, documents, so_ket_qua):
         doc.metadata["_lexical_coverage"] = round(do_phu, 4)
         doc.metadata["_retrieval_score"] = (
             doc.metadata.get("_rrf_score", 0.0)
-            + 0.025 * do_phu
-            + 0.035 * do_phu_tieu_de
+            + TRONG_SO_NOI_DUNG * do_phu
+            + TRONG_SO_TIEU_DE * do_phu_tieu_de
+            + TRONG_SO_TIEU_DE_IDF * (do_phu_tieu_de_idf or 0.0)
             + 0.004 * dong_thuan
             - phat_lech_pham_vi
             - phat_het_hieu_luc
@@ -349,9 +402,15 @@ def tach_thuc_the_so_sanh(cau_hoi: str):
 
 
 def truy_hoi_hybrid(cau_hoi, vector_store, bm25_retriever, so_ket_qua=SO_KET_QUA_CUOI,
-                    bo_loc=None):
+                    bo_loc=None, tu_vung=None):
     """Truy hồi 1 câu hỏi (không tách thực thể) bằng dense + BM25 + RRF."""
-    so_ung_vien = SO_UNG_VIEN_MOI_RETRIEVER
+    # Rổ ứng viên KHÔNG nở theo so_ket_qua. Bộ đo MRR/Hit@K xin danh sách dài
+    # hơn cửa sổ prompt để biết tài liệu đúng nằm ở hạng mấy; nếu vì thế mà nới
+    # luôn rổ ứng viên thì RRF fuse trên một tập khác hẳn và thứ hạng đo được
+    # không còn là thứ hạng của hệ thống đang chạy - đo xong ra MRR thấp hơn
+    # thực tế 0.1 mà không hiểu vì sao. Giữ 15, chỉ cắt sâu hơn ở đầu ra.
+    so_giu = SO_UNG_VIEN_MOI_RETRIEVER
+    so_ung_vien = so_giu
     if bo_loc is not None:
         # FAISS không lọc theo metadata lúc tìm, chỉ lọc được SAU khi có kết
         # quả. Lấy đúng 15 ứng viên rồi mới lọc thì một phạm vi hẹp (một môn,
@@ -366,34 +425,38 @@ def truy_hoi_hybrid(cau_hoi, vector_store, bm25_retriever, so_ket_qua=SO_KET_QUA
             continue
         doc.metadata["_dense_distance"] = float(distance)
         ket_qua_dense.append(doc)
-        if len(ket_qua_dense) >= SO_UNG_VIEN_MOI_RETRIEVER:
+        if len(ket_qua_dense) >= so_giu:
             break
     ket_qua_bm25 = _ket_qua_bm25_co_diem(
-        cau_hoi, bm25_retriever, SO_UNG_VIEN_MOI_RETRIEVER, bo_loc
+        cau_hoi, bm25_retriever, so_giu, bo_loc
     )
     hop_nhat = rrf_fusion(("dense", ket_qua_dense), ("bm25", ket_qua_bm25))
-    return xep_hang_theo_lien_quan(cau_hoi, hop_nhat, so_ket_qua)
+    return xep_hang_theo_lien_quan(cau_hoi, hop_nhat, so_ket_qua, tu_vung)
 
 
 def truy_hoi(cau_hoi, vector_store, bm25_retriever, so_ket_qua=SO_KET_QUA_CUOI,
-             bo_loc=None):
+             bo_loc=None, tu_vung=None):
     """
     Điểm vào chính: tự phát hiện câu so sánh để làm balanced retrieval theo
     từng thực thể, nếu không thì truy hồi hybrid bình thường trên cả câu hỏi.
 
     `bo_loc` là hàm nhận Document trả về bool - dùng cho phạm vi truy xuất
     (môn/lớp/cấp học). Để None thì tìm trên cả kho như trước.
+
+    `tu_vung` là TuVungKho của kho đang dùng, để reranker chấm khớp tên tài
+    liệu theo IDF. Để None thì rerank vẫn chạy, chỉ kém tinh hơn.
     """
     thuc_the = tach_thuc_the_so_sanh(cau_hoi)
     if not thuc_the:
-        return truy_hoi_hybrid(cau_hoi, vector_store, bm25_retriever, so_ket_qua, bo_loc)
+        return truy_hoi_hybrid(
+            cau_hoi, vector_store, bm25_retriever, so_ket_qua, bo_loc, tu_vung)
 
     so_moi_thuc_the = max(2, so_ket_qua // len(thuc_the))
     ket_qua_theo_thuc_the = []
     da_thay_noi_dung = set()
     for cum in thuc_the:
         for doc in truy_hoi_hybrid(
-            cum, vector_store, bm25_retriever, so_moi_thuc_the, bo_loc
+            cum, vector_store, bm25_retriever, so_moi_thuc_the, bo_loc, tu_vung
         ):
             if doc.page_content not in da_thay_noi_dung:
                 da_thay_noi_dung.add(doc.page_content)

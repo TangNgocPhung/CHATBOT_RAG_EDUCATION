@@ -1,0 +1,24 @@
+# Lop phu: TAT container caddy cua Nearby.
+#
+# Ly do: tren VPS nay co MOT Caddy duy nhat chay tren host, giu 80/443 va
+# lam cong vao cho ca hai site (chatbot + Nearby). Hai ben cung doi 443 thi
+# Docker thang, Caddy tren host chet im, ca hai site cung hong.
+#
+# Cach tat: gan profile cho dich vu caddy. Compose v2 chi chay dich vu co
+# profile khi profile do duoc bat, nen mac dinh no dung ngoai.
+# KHONG xoa hay sua ports o day: danh sach ports khi gop nhieu file compose
+# la NOI THEM chu khong thay the.
+#
+# Dung kem:
+#   docker compose --env-file config/production.env \
+#     -f docker-compose.yml \
+#     -f deploy/docker-compose.prod.yml \
+#     -f deploy/khong-dung-caddy.yml up -d
+#
+# Gateway nginx da nghe o 127.0.0.1:8081 (GATEWAY_PORT), Caddy tren host tro
+# thang vao do.
+
+services:
+  caddy:
+    profiles:
+      - khong-dung

@@ -4,19 +4,28 @@
 Chạy một câu hỏi:      python benchmark_chatbot.py "câu hỏi của bạn"
 Chạy cả bộ (đầy đủ):   python benchmark_chatbot.py --bo
 Chạy nhanh, chỉ truy hồi: python benchmark_chatbot.py --nhanh
+Đo MRR / Hit@K:        python benchmark_chatbot.py --ir
 Quét ngưỡng chặn:      python benchmark_chatbot.py --nhanh --do-nguong
 Chỉ một nhóm:          python benchmark_chatbot.py --nhanh --nhom video
 Lấy mẫu N câu:         python benchmark_chatbot.py --bo --so 20
 
-HAI CHẾ ĐỘ, HAI MỤC ĐÍCH KHÁC NHAU
+BA CHẾ ĐỘ, BA MỤC ĐÍCH KHÁC NHAU
   --bo    gọi đủ cả LLM. Đo được chất lượng câu chữ (trích dẫn, số liệu) nhưng
           tốn ~150 giây/câu trên CPU, tức hơn 5 tiếng cho cả bộ 127 câu.
   --nhanh chỉ chạy truy hồi + cổng chặn lạc đề, KHÔNG gọi LLM. Vài phút cho cả
           bộ. Đây là chế độ dùng khi tinh chỉnh tham số truy hồi hoặc ngưỡng
           chặn, vì hai thứ đó không phụ thuộc vào model sinh câu trả lời.
+  --ir    chỉ đo CHẤT LƯỢNG XẾP HẠNG của khối truy hồi bằng bộ chỉ số IR/QA
+          kinh điển: MRR, Hit@K, Recall@K, nDCG@K, MAP (xem chi_so_ir.py).
+          Truy hồi sâu hơn mức đưa vào prompt (mặc định 24 chunk thay vì 4) vì
+          muốn biết tài liệu đúng nằm ở HẠNG MẤY thì phải nhìn quá cửa sổ mà
+          prompt dùng. Bỏ qua nhóm ngoai_pham_vi - câu không có tài liệu đúng
+          thì không có thứ hạng để đo.
 
 Các chỉ số được đo (đều tính tự động, không chấm tay):
   - Truy hồi đúng nguồn: nguồn mong đợi có nằm trong danh sách được truy hồi không.
+  - Thứ hạng nguồn đúng: hạng 1-based của tài liệu đúng đầu tiên, nguyên liệu
+                         để tính MRR và Hit@K (ghi ở cả ba chế độ).
   - Chặn đúng:           câu ngoài phạm vi kho có bị cổng chặn bắt không.
   - Từ chối oan:         câu ĐÚNG chủ đề có bị cổng chặn bắt nhầm không (chỉ số
                          quan trọng nhất khi siết ngưỡng - siết quá tay là hỏng).
@@ -38,13 +47,21 @@ import sys
 import time
 from dataclasses import asdict, dataclass, field
 
+import chi_so_ir
+import hybrid_retrieval
 import kiem_tra_tra_loi
 import tu_vung_kho
+from hybrid_retrieval import SO_KET_QUA_CUOI
 from rag_service import RAGService
 
 THU_MUC_DU_AN = os.path.dirname(os.path.abspath(__file__))
 DUONG_DAN_BO_CAU_HOI = os.path.join(THU_MUC_DU_AN, "bo_cau_hoi_benchmark.json")
 DUONG_DAN_KET_QUA = os.path.join(THU_MUC_DU_AN, "ket_qua_benchmark.json")
+DUONG_DAN_KET_QUA_IR = os.path.join(THU_MUC_DU_AN, "ket_qua_chi_so_ir.json")
+DUONG_DAN_BANG_IR = os.path.join(THU_MUC_DU_AN, "bang_chi_so_ir.md")
+# Số chunk truy hồi khi đo xếp hạng. 24 chunk, tối đa 2 chunk mỗi nguồn, cho
+# khoảng 12+ tài liệu riêng biệt - vừa đủ để Hit@10 và MRR@10 có nghĩa.
+SO_CHUNK_DO_IR = 24
 
 CAU_HOI_MAC_DINH = (
     "Theo quy định về dạy thêm, học thêm, những trường hợp nào "
@@ -77,6 +94,19 @@ class KetQuaMotCau:
     # Khoảng cách vector nhỏ nhất trong nhóm truy hồi - tín hiệu NGỮ NGHĨA, độc
     # lập với từ vựng, nên bắt được câu lạc đề mà mọi từ đều có thật trong kho.
     khoang_cach_dense: float = 0.0
+    # Thứ hạng (1-based, tính trên danh sách TÀI LIỆU đã khử trùng) của các
+    # nguồn khớp nhãn. Đây là nguyên liệu duy nhất mà MRR/Hit@K/nDCG cần.
+    thu_hang_nguon_dung: list[int] = field(default_factory=list)
+    so_nguon_mong_doi: int = 0
+    so_tai_lieu_truy_hoi: int = 0
+    tai_lieu_xep_hang: list[str] = field(default_factory=list)
+    # Thứ hạng ở mức CHUNK - dùng để soi riêng cửa sổ thật sự đi vào prompt.
+    thu_hang_chunk_dung: list[int] = field(default_factory=list)
+    nguon_mong_doi: list[str] = field(default_factory=list)
+    # Ollama nghẽn, mất kết nối, timeout... - hỏng ở tầng hạ tầng, không phải ở
+    # chất lượng truy hồi. Tính những lượt này là "trượt" thì MRR tụt 0.01 mỗi
+    # lần máy bận, và hai lần chạy cùng một cấu hình lại ra hai kết luận.
+    loi_ha_tang: bool = False
 
 
 def _bat_utf8_cho_console() -> None:
@@ -91,10 +121,17 @@ def _cham_diem(kq: KetQuaMotCau, muc: dict) -> None:
         kq.tu_choi_dung = kq.da_tu_choi
     mong_doi = muc.get("nguon_mong_doi")
     if mong_doi:
-        kq.truy_hoi_dung_nguon = any(
-            any(khoa.casefold() in ten.casefold() for ten in kq.nguon)
-            for khoa in mong_doi
+        # Xếp hạng ở mức TÀI LIỆU: nhãn là một phần tên file, còn danh sách trả
+        # về là chunk, nên phải khử trùng trước khi nói "hạng mấy".
+        kq.tai_lieu_xep_hang = chi_so_ir.xep_hang_tai_lieu(kq.nguon)
+        kq.so_tai_lieu_truy_hoi = len(kq.tai_lieu_xep_hang)
+        kq.so_nguon_mong_doi = len(mong_doi)
+        kq.nguon_mong_doi = list(mong_doi)
+        kq.thu_hang_nguon_dung = chi_so_ir.thu_hang_lien_quan(
+            kq.tai_lieu_xep_hang, mong_doi
         )
+        kq.thu_hang_chunk_dung = chi_so_ir.thu_hang_lien_quan(kq.nguon, mong_doi)
+        kq.truy_hoi_dung_nguon = bool(kq.thu_hang_nguon_dung)
 
 
 def _ghi_tin_hieu(kq: KetQuaMotCau, cau_hoi: str, tai_lieu, tu_vung) -> None:
@@ -185,6 +222,154 @@ def chay_mot_cau_nhanh(service: RAGService, muc: dict) -> KetQuaMotCau:
     ket_qua.giay = round(time.perf_counter() - bat_dau, 2)
     _cham_diem(ket_qua, muc)
     return ket_qua
+
+
+def chay_mot_cau_ir(service: RAGService, muc: dict,
+                    so_chunk: int = SO_CHUNK_DO_IR) -> KetQuaMotCau:
+    """
+    Chế độ đo xếp hạng: truy hồi SÂU hơn cửa sổ prompt, không gọi LLM, không
+    cho cổng chặn can thiệp vào danh sách.
+
+    Cổng chặn vẫn được chấm và ghi lại (ly_do_chan) nhưng không cắt kết quả:
+    trộn hai thứ vào một con số sẽ không biết một câu hỏng là vì xếp hạng kém
+    hay vì bị chặn oan, mà hai lỗi đó sửa ở hai chỗ khác nhau.
+    """
+    cau_hoi = muc["cau_hoi"]
+    ket_qua = KetQuaMotCau(cau_hoi=cau_hoi, nhom=muc.get("nhom", ""))
+    bat_dau = time.perf_counter()
+    cau_truy_hoi, _ = RAGService._conversation_inputs(cau_hoi, None)
+    tai_lieu = []
+    try:
+        tai_lieu = service._retrieve(cau_truy_hoi, so_ket_qua=so_chunk)
+    except ValueError as exc:
+        # PDF chưa OCR, video không có lời thoại: đây là giới hạn THẬT của hệ
+        # thống - người dùng thật cũng không nhận được câu trả lời - nên vẫn
+        # tính là trượt, không loại khỏi mẫu.
+        ket_qua.loi = f"{type(exc).__name__}: {exc}"
+        ket_qua.ly_do_chan = "khong_truy_hoi_duoc"
+    except Exception as exc:
+        ket_qua.loi = f"{type(exc).__name__}: {exc}"
+        ket_qua.loi_ha_tang = True
+
+    ket_qua.nguon = [d.metadata.get("source_file", "") for d in tai_lieu]
+    _ghi_tin_hieu(ket_qua, cau_truy_hoi, tai_lieu, service.tu_vung)
+    if not ket_qua.ly_do_chan:
+        ket_qua.ly_do_chan = tu_vung_kho.ly_do_ngoai_pham_vi(
+            cau_truy_hoi, tai_lieu, service.tu_vung
+        )
+    ket_qua.bi_chan_som = bool(ket_qua.ly_do_chan)
+    ket_qua.giay = round(time.perf_counter() - bat_dau, 2)
+    _cham_diem(ket_qua, muc)
+    return ket_qua
+
+
+def _luot_truy_hoi(cac_ket_qua: list[KetQuaMotCau]) -> list[chi_so_ir.LuotTruyHoi]:
+    """Giữ lại những câu CÓ nhãn nguồn đúng. Câu ngoai_pham_vi không có tài
+    liệu đúng nào trong kho nên không có thứ hạng để đo - đưa vào thì MRR chỉ
+    còn là phép đo tỷ lệ câu lạc đề trong bộ đề, không phải chất lượng xếp hạng."""
+    return [
+        chi_so_ir.LuotTruyHoi(
+            cau_hoi=k.cau_hoi,
+            nhom=k.nhom or "khac",
+            thu_hang=k.thu_hang_nguon_dung,
+            so_lien_quan=max(1, k.so_nguon_mong_doi),
+            so_ung_vien=k.so_tai_lieu_truy_hoi,
+            nguon_xep_hang=k.tai_lieu_xep_hang,
+        )
+        for k in cac_ket_qua
+        if k.so_nguon_mong_doi and not k.loi_ha_tang
+    ]
+
+
+def in_bang_chi_so_ir(cac_ket_qua: list[KetQuaMotCau], so_chunk: int) -> dict:
+    """
+    Bảng MRR / Hit@K / nDCG. Cách đọc:
+      - Hit@1 là tỷ lệ câu mà tài liệu đúng được xếp ngay đầu.
+      - Hit@10 gần 100% mà MRR thấp: truy hồi TÌM RA tài liệu nhưng xếp sai
+        thứ tự - sửa ở reranker (xep_hang_theo_lien_quan), không phải ở embedding.
+      - Hit@10 cũng thấp: tài liệu đúng không lọt nổi vào rổ ứng viên - vấn đề
+        nằm ở chunking/embedding/BM25, rerank không cứu được.
+    """
+    cac_luot = _luot_truy_hoi(cac_ket_qua)
+    if not cac_luot:
+        print("\nKhông có câu nào kèm nhãn nguon_mong_doi để đo chỉ số IR.")
+        return {}
+
+    cac_k = chi_so_ir.CAC_K_MAC_DINH
+    tom_tat_nhom = chi_so_ir.tong_hop_theo_nhom(cac_luot, cac_k)
+    tom_tat = chi_so_ir.tong_hop(cac_luot, cac_k)
+
+    print("\n" + "=" * 86)
+    print(f"CHỈ SỐ IR/QA - XẾP HẠNG TRUY HỒI  ({len(cac_luot)} câu có nhãn nguồn, "
+          f"truy hồi {so_chunk} chunk)")
+    print("=" * 86)
+    print(f"{'Nhóm':<18}{'Câu':>5}{'MRR@10':>9}"
+          + "".join(f"{'Hit@' + str(k):>9}" for k in cac_k)
+          + f"{'nDCG@10':>10}{'MAP@10':>9}")
+    for nhom, tt in tom_tat_nhom.items():
+        print(f"{nhom:<18}{tt['so_cau']:>5}{tt['mrr']:>9.3f}"
+              + "".join(f"{tt['hit@' + str(k)] * 100:>8.0f}%" for k in cac_k)
+              + f"{tt['ndcg@10']:>10.3f}{tt['map@10']:>9.3f}")
+    print("-" * 86)
+    print(f"{'TOÀN BỘ':<18}{tom_tat['so_cau']:>5}{tom_tat['mrr']:>9.3f}"
+          + "".join(f"{tom_tat['hit@' + str(k)] * 100:>8.0f}%" for k in cac_k)
+          + f"{tom_tat['ndcg@10']:>10.3f}{tom_tat['map@10']:>9.3f}")
+
+    thap, cao = tom_tat["mrr_ktc95"]
+    print(f"\nMRR@10 = {tom_tat['mrr']:.3f}  (KTC 95% bootstrap: "
+          f"{thap:.3f} – {cao:.3f})")
+    if tom_tat["hang_trung_binh_khi_trung"]:
+        print(f"Hạng trung bình khi trúng: {tom_tat['hang_trung_binh_khi_trung']:.2f} "
+              f"· số câu trượt hẳn: {tom_tat['so_cau_truot']}/{tom_tat['so_cau']}")
+    print(f"Số tài liệu riêng biệt mỗi lượt: {tom_tat['so_ung_vien_tb']:.1f}")
+
+    phan_bo = chi_so_ir.phan_bo_thu_hang(cac_luot, k_toi_da=10)
+    print("\nPhân bố hạng của tài liệu đúng đầu tiên:")
+    print("  " + "  ".join(f"{hang}:{so}" for hang, so in phan_bo.items() if so))
+
+    ha_tang = [k for k in cac_ket_qua if k.so_nguon_mong_doi and k.loi_ha_tang]
+    if ha_tang:
+        print(f"\nĐã loại {len(ha_tang)} câu khỏi phép đo vì lỗi hạ tầng "
+              f"(Ollama nghẽn/mất kết nối), không phải vì truy hồi sai:")
+        for k in ha_tang[:5]:
+            print(f"    · {k.loi[:70]}")
+        print("  Chạy lại khi máy rảnh để có mẫu đủ 100%.")
+
+    # Con số sát thực tế nhất: trong CỬA SỔ thật sự đi vào prompt, tài liệu
+    # đúng có mặt bao nhiêu phần trăm. Top-k của danh sách sâu chính là kết quả
+    # khi chạy thật, vì reranker cắt theo đúng thứ tự này.
+    co_nhan = [k for k in cac_ket_qua if k.so_nguon_mong_doi and not k.loi_ha_tang]
+    trong_cua_so = sum(
+        1 for k in co_nhan
+        if any(h <= SO_KET_QUA_CUOI for h in k.thu_hang_chunk_dung)
+    )
+    print(f"\nTrong cửa sổ prompt thật ({SO_KET_QUA_CUOI} chunk): "
+          f"{trong_cua_so}/{len(co_nhan)} câu có tài liệu đúng "
+          f"({trong_cua_so / len(co_nhan) * 100:.0f}%)")
+    bi_chan = [k for k in co_nhan if k.bi_chan_som and k.thu_hang_nguon_dung]
+    if bi_chan:
+        print(f"Cảnh báo: {len(bi_chan)} câu truy hồi ĐÚNG nhưng vẫn bị cổng chặn "
+              f"bắt - đây là mất mát của cổng chặn, không phải của xếp hạng.")
+        for k in bi_chan[:5]:
+            print(f"    · [{k.ly_do_chan}] {k.cau_hoi[:58]}")
+
+    kem_nhat = sorted(
+        (k for k in co_nhan),
+        key=lambda k: (k.thu_hang_nguon_dung[0] if k.thu_hang_nguon_dung else 10**6),
+        reverse=True,
+    )[:8]
+    print("\nCâu xếp hạng kém nhất (sửa mấy câu này là MRR nhúc nhích):")
+    for k in kem_nhat:
+        hang = k.thu_hang_nguon_dung[0] if k.thu_hang_nguon_dung else None
+        nhan = f"hạng {hang}" if hang else "TRƯỢT"
+        dau = k.tai_lieu_xep_hang[0] if k.tai_lieu_xep_hang else "(không có)"
+        print(f"    · {nhan:<8} mong đợi {k.nguon_mong_doi} · đứng đầu: {dau[:46]}")
+        print(f"      {k.cau_hoi[:74]}")
+
+    return {"toan_bo": tom_tat, "theo_nhom": tom_tat_nhom,
+            "phan_bo_thu_hang": phan_bo,
+            "trong_cua_so_prompt": trong_cua_so / len(co_nhan),
+            "so_cau_loi_ha_tang": len(ha_tang)}
 
 
 def _ty_le(cac_gia_tri: list[bool]) -> str:
@@ -412,6 +597,132 @@ def chay_bo_cau_hoi(
     return 0
 
 
+def do_ir_tu_tep(duong_dan: str) -> int:
+    """
+    Tính lại MRR/Hit@K từ một tệp kết quả đã chạy trước, không đụng tới Ollama.
+
+    Danh sách nguồn vốn đã được ghi kèm thứ tự trong mọi lần chạy cũ, nên các
+    bản đo từ trước vẫn quy ra được chỉ số xếp hạng - đủ để so cấu hình cũ với
+    cấu hình mới mà không phải chạy lại cả bộ. Lưu ý các lần chạy cũ chỉ lưu
+    SO_KET_QUA_CUOI chunk, nên Hit@10 ở đó bị chặn trên bởi cửa sổ đó chứ không
+    phải bởi chất lượng truy hồi - đọc MRR@4 là chính.
+    """
+    with open(duong_dan, encoding="utf-8") as f:
+        du_lieu = json.load(f)
+    with open(DUONG_DAN_BO_CAU_HOI, encoding="utf-8") as f:
+        nhan_theo_cau = {
+            muc["cau_hoi"]: muc.get("nguon_mong_doi", [])
+            for muc in json.load(f)["cau_hoi"]
+        }
+
+    cac_ket_qua = []
+    for muc in du_lieu.get("ket_qua", []):
+        mong_doi = muc.get("nguon_mong_doi") or nhan_theo_cau.get(muc["cau_hoi"], [])
+        if not mong_doi:
+            continue
+        kq = KetQuaMotCau(cau_hoi=muc["cau_hoi"], nhom=muc.get("nhom", ""))
+        kq.nguon = muc.get("nguon", [])
+        kq.bi_chan_som = bool(muc.get("bi_chan_som"))
+        kq.ly_do_chan = muc.get("ly_do_chan", "")
+        _cham_diem(kq, {"cau_hoi": kq.cau_hoi, "nguon_mong_doi": mong_doi})
+        cac_ket_qua.append(kq)
+
+    if not cac_ket_qua:
+        print(f"{duong_dan} không có lượt nào khớp nhãn trong bộ câu hỏi.")
+        return 1
+    print(f"Đọc {duong_dan} (chạy lúc {du_lieu.get('chay_luc', '?')}, "
+          f"chế độ {du_lieu.get('che_do', '?')}, model {du_lieu.get('model', '?')})")
+    in_bang_chi_so_ir(cac_ket_qua, so_chunk=max(len(k.nguon) for k in cac_ket_qua))
+    return 0
+
+
+def _duong_dan_ir(nhom_loc: str | None, so_luong: int | None) -> tuple[str, str]:
+    """
+    Lần chạy một nhóm hoặc một mẫu N câu phải ghi ra tệp riêng. Ghi chung với
+    bản đầy đủ thì một lệnh `--ir --nhom video` chạy để soi 5 câu sẽ xóa mất
+    bảng 97 câu đang dùng cho báo cáo, mà không báo gì cả.
+    """
+    hau_to = ""
+    if nhom_loc:
+        hau_to += f"_{nhom_loc}"
+    if so_luong:
+        hau_to += f"_mau{so_luong}"
+    if not hau_to:
+        return DUONG_DAN_KET_QUA_IR, DUONG_DAN_BANG_IR
+    goc_json, duoi_json = os.path.splitext(DUONG_DAN_KET_QUA_IR)
+    goc_md, duoi_md = os.path.splitext(DUONG_DAN_BANG_IR)
+    return f"{goc_json}{hau_to}{duoi_json}", f"{goc_md}{hau_to}{duoi_md}"
+
+
+def chay_do_ir(service: RAGService, nhom_loc: str | None, so_luong: int | None,
+               so_chunk: int) -> int:
+    """Chạy cả bộ ở chế độ đo xếp hạng rồi ghi số liệu + bảng markdown."""
+    danh_sach = [
+        muc for muc in _nap_danh_sach(nhom_loc, so_luong)
+        if muc.get("nguon_mong_doi")
+    ]
+    if not danh_sach:
+        print("Không có câu hỏi nào kèm nhãn nguon_mong_doi để đo.")
+        return 1
+
+    cac_ket_qua = []
+    for thu_tu, muc in enumerate(danh_sach, 1):
+        kq = chay_mot_cau_ir(service, muc, so_chunk)
+        cac_ket_qua.append(kq)
+        hang = kq.thu_hang_nguon_dung[0] if kq.thu_hang_nguon_dung else None
+        nhan = f"hạng {hang}" if hang else "TRƯỢT"
+        print(f"[{thu_tu:>3}/{len(danh_sach)}] {kq.giay:>5.2f}s {nhan:<9}"
+              f"{kq.cau_hoi[:58]}", flush=True)
+
+    tom_tat = in_bang_chi_so_ir(cac_ket_qua, so_chunk)
+
+    trang_thai = service.status_dict()
+    duong_dan_json, duong_dan_md = _duong_dan_ir(nhom_loc, so_luong)
+    with open(duong_dan_json, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "chay_luc": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "che_do": "chi_so_ir",
+                # Chỉ số truy hồi phụ thuộc model NHÚNG, không phụ thuộc model
+                # trả lời - ghi cả hai để lần sau biết con số này thuộc về đâu.
+                "model_embedding": os.getenv("RAG_EMBEDDING_MODEL", "bge-m3"),
+                "model": trang_thai["model"],
+                "so_vector": trang_thai["vector_count"],
+                "so_chunk_truy_hoi": so_chunk,
+                "so_chunk_vao_prompt": SO_KET_QUA_CUOI,
+                "tom_tat": tom_tat,
+                "ket_qua": [asdict(k) for k in cac_ket_qua],
+            },
+            f, ensure_ascii=False, indent=1,
+        )
+    if tom_tat:
+        with open(duong_dan_md, "w", encoding="utf-8") as f:
+            toan_bo = tom_tat["toan_bo"]
+            thap, cao = toan_bo["mrr_ktc95"]
+            f.write(f"# Chỉ số IR/QA của khối truy hồi\n\n"
+                    f"Đo ngày {time.strftime('%d/%m/%Y')} trên "
+                    f"{toan_bo['so_cau']} câu hỏi có nhãn nguồn, "
+                    f"kho {trang_thai['vector_count']} vector, truy hồi sâu "
+                    f"{so_chunk} chunk ({SO_KET_QUA_CUOI} chunk đi vào prompt).\n\n")
+            f.write(chi_so_ir.bang_markdown(toan_bo, tom_tat["theo_nhom"]) + "\n\n")
+            f.write(
+                f"MRR@10 = {toan_bo['mrr']:.3f}, khoảng tin cậy 95% (bootstrap) "
+                f"{thap:.3f} – {cao:.3f}. Trong cửa sổ {SO_KET_QUA_CUOI} chunk thực "
+                f"sự đi vào prompt, {tom_tat['trong_cua_so_prompt'] * 100:.0f}% câu "
+                f"có tài liệu đúng.\n\n"
+                f"Lưu ý khi đọc Hit@10: sau khử trùng nội dung và giới hạn "
+                f"{hybrid_retrieval.SO_CHUNK_TOI_DA_MOI_NGUON} chunk mỗi nguồn, mỗi "
+                f"lượt chỉ còn trung bình {toan_bo['so_ung_vien_tb']:.1f} tài liệu "
+                f"riêng biệt - Hit@10 vì thế gần như đã chạm trần cấu trúc của rổ ứng "
+                f"viên, không phải trần chất lượng xếp hạng.\n")
+            if tom_tat["so_cau_loi_ha_tang"]:
+                f.write(f"\nĐã loại {tom_tat['so_cau_loi_ha_tang']} câu khỏi mẫu vì "
+                        f"lỗi hạ tầng trong lúc chạy (Ollama nghẽn hoặc mất kết "
+                        f"nối), không phải vì truy hồi sai.\n")
+        print(f"\nĐã ghi {duong_dan_json} và {duong_dan_md}")
+    return 0
+
+
 def chay_mot_cau_hoi_le(service: RAGService, cau_hoi: str) -> int:
     kq = chay_mot_cau(service, {"cau_hoi": cau_hoi})
     print(f"\nCÂU HỎI: {cau_hoi}\n")
@@ -440,7 +751,18 @@ def main() -> int:
                         help="chỉ lấy mẫu N câu (hạt giống cố định)")
     parser.add_argument("--do-nguong", action="store_true",
                         help="in bảng quét ngưỡng chặn sau khi chạy")
+    parser.add_argument("--ir", action="store_true",
+                        help="đo MRR / Hit@K / nDCG của khối truy hồi")
+    parser.add_argument("--sau", type=int, default=SO_CHUNK_DO_IR,
+                        help=f"số chunk truy hồi khi đo IR (mặc định {SO_CHUNK_DO_IR})")
+    parser.add_argument("--tu-tep", default=None,
+                        help="tính lại chỉ số IR từ một tệp kết quả cũ, không chạy lại")
     tham_so = parser.parse_args()
+
+    # Tính lại từ tệp thì không cần chỉ mục lẫn Ollama - khởi tạo service ở
+    # đây chỉ tổ bắt chờ vài chục giây cho một phép cộng.
+    if tham_so.tu_tep:
+        return do_ir_tu_tep(tham_so.tu_tep)
 
     service = RAGService()
     service.initialize()
@@ -448,6 +770,8 @@ def main() -> int:
         print(f"LỖI KHỞI TẠO: {service.status.message}")
         return 1
 
+    if tham_so.ir:
+        return chay_do_ir(service, tham_so.nhom, tham_so.so, tham_so.sau)
     if tham_so.bo or tham_so.nhanh or tham_so.nhom:
         return chay_bo_cau_hoi(
             service, tham_so.nhom, tham_so.nhanh, tham_so.so, tham_so.do_nguong

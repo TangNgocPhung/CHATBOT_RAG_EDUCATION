@@ -46,6 +46,8 @@ const elements = {
   indexProgressTrack: $('#indexProgressTrack'),
   indexProgressFill: $('#indexProgressFill'),
   indexProgressDetail: $('#indexProgressDetail'),
+  indexProgressElapsed: $('#indexProgressElapsed'),
+  indexProgressEta: $('#indexProgressEta'),
   indexProgressFile: $('#indexProgressFile'),
   retry: $('#retryButton'),
   updateIndex: $('#updateIndexButton'),
@@ -1225,11 +1227,88 @@ async function pollStatus() {
   updateSendButton();
 }
 
+// ============================================================
+// TIẾN ĐỘ LẬP CHỈ MỤC
+// ============================================================
+// Máy chủ chỉ trả trạng thái mỗi 4 giây, mà một tệp SGK có thể mất vài phút
+// mới nhích phần trăm. Nếu chỉ vẽ lại theo nhịp poll thì người dùng nhìn thấy
+// một thanh đứng im và tưởng ứng dụng treo, nên đồng hồ được chạy tại chỗ.
+const tienDoChiMuc = {
+  moc: 0,          // thời điểm (ms, đồng hồ máy khách) lượt cập nhật bắt đầu
+  conLai: null,    // giây còn lại, đã làm mượt
+  troiLucUoc: 0,   // số giây đã trôi tại lần ước tính gần nhất
+  dangChay: false,
+};
+let dongHoChiMuc = null;
+
+function dinhDangKhoangThoiGian(giay) {
+  const tong = Math.max(0, Math.round(giay));
+  const gio = Math.floor(tong / 3600);
+  const phut = Math.floor((tong % 3600) / 60);
+  const giay_le = tong % 60;
+  const dem = (value) => value.toString().padStart(2, '0');
+  return gio ? `${gio}:${dem(phut)}:${dem(giay_le)}` : `${dem(phut)}:${dem(giay_le)}`;
+}
+
+// "Còn 3 phút 20" dễ đọc hơn "còn 00:03:20" khi người dùng chỉ liếc qua.
+function dinhDangUocTinh(giay) {
+  const tong = Math.max(0, Math.round(giay));
+  if (tong < 45) return 'chưa tới 1 phút';
+  const gio = Math.floor(tong / 3600);
+  const phut = Math.round((tong % 3600) / 60);
+  if (gio) return `khoảng ${gio} giờ ${phut ? `${phut} phút` : ''}`.trim();
+  return `khoảng ${Math.max(1, phut)} phút`;
+}
+
+function veDongHoChiMuc() {
+  if (!tienDoChiMuc.dangChay || !tienDoChiMuc.moc) return;
+  const troi = (Date.now() - tienDoChiMuc.moc) / 1000;
+  elements.indexProgressElapsed.textContent = `Đã chạy ${dinhDangKhoangThoiGian(troi)}`;
+  if (tienDoChiMuc.conLai == null) {
+    elements.indexProgressEta.textContent = 'Đang ước tính thời gian còn lại...';
+    return;
+  }
+  // Trừ dần theo giây thật để con số đếm ngược mượt giữa hai lần poll.
+  const conLai = Math.max(0, tienDoChiMuc.conLai - (troi - tienDoChiMuc.troiLucUoc));
+  elements.indexProgressEta.textContent = conLai < 5
+    ? 'Sắp xong'
+    : `Còn ${dinhDangUocTinh(conLai)}`;
+}
+
+function batDongHoChiMuc() {
+  if (dongHoChiMuc) return;
+  dongHoChiMuc = window.setInterval(veDongHoChiMuc, 1000);
+}
+
+function dungDongHoChiMuc() {
+  if (!dongHoChiMuc) return;
+  window.clearInterval(dongHoChiMuc);
+  dongHoChiMuc = null;
+  tienDoChiMuc.dangChay = false;
+}
+
+// Ước tính thời gian còn lại từ nhịp đã đi được, làm mượt để con số không nhảy
+// giật mỗi lần một tệp lớn xong.
+function capNhatUocTinh(percent, troi) {
+  if (percent < 3 || troi < 20) {
+    tienDoChiMuc.conLai = null;
+    return;
+  }
+  const thoNhap = troi * (100 - percent) / percent;
+  tienDoChiMuc.conLai = tienDoChiMuc.conLai == null
+    ? thoNhap
+    : tienDoChiMuc.conLai * 0.7 + thoNhap * 0.3;
+  tienDoChiMuc.troiLucUoc = troi;
+}
+
 function renderIndexProgress(progress, state = '') {
   const legacyUpdate = state === 'updating' && !progress;
   if (!progress?.active && !legacyUpdate) {
     elements.indexProgress.classList.add('hidden');
     elements.indexProgressTrack.classList.remove('indeterminate');
+    dungDongHoChiMuc();
+    tienDoChiMuc.moc = 0;
+    tienDoChiMuc.conLai = null;
     return;
   }
   if (legacyUpdate) {
@@ -1239,21 +1318,30 @@ function renderIndexProgress(progress, state = '') {
     elements.indexProgressPercent.textContent = 'Đang chạy';
     elements.indexProgressFill.style.width = '35%';
     elements.indexProgressTrack.removeAttribute('aria-valuenow');
-    elements.indexProgressDetail.textContent = 'Lượt hiện tại đang chạy bằng phiên bản cũ';
-    elements.indexProgressFile.textContent = 'Mở lại ứng dụng sau lượt này để xem số tệp và trang chính xác';
+    elements.indexProgressElapsed.textContent = 'Lượt hiện tại chạy bằng phiên bản cũ';
+    elements.indexProgressEta.textContent = '';
+    elements.indexProgressDetail.textContent = 'Mở lại ứng dụng sau lượt này để xem thời gian và số tệp';
+    elements.indexProgressFile.textContent = '';
     elements.indexProgressFile.title = '';
+    dungDongHoChiMuc();
     return;
   }
   const percent = Math.max(0, Math.min(100, Number(progress.percent) || 0));
   const completed = Number(progress.completed) || 0;
   const total = Number(progress.total) || 0;
-  const elapsedMinutes = Math.floor((Number(progress.elapsed_seconds) || 0) / 60);
+  const troi = Math.max(0, Number(progress.elapsed_seconds) || 0);
   const countText = total ? `${completed}/${total} ${progress.unit || 'tệp'}` : '';
-  const detail = [countText, progress.detail, elapsedMinutes ? `đã chạy ${elapsedMinutes} phút` : '']
-    .filter(Boolean).join(' · ');
+  const detail = [countText, progress.detail].filter(Boolean).join(' · ');
+
+  // Neo mốc bắt đầu theo đồng hồ máy khách: đồng hồ máy chủ có thể lệch, còn
+  // hiệu số elapsed_seconds thì luôn đúng.
+  tienDoChiMuc.moc = Date.now() - troi * 1000;
+  tienDoChiMuc.dangChay = true;
+  capNhatUocTinh(percent, troi);
 
   elements.indexProgress.classList.remove('hidden');
   elements.indexProgressTrack.classList.remove('indeterminate');
+  elements.indexProgressTrack.classList.toggle('done', percent >= 100);
   elements.indexProgressLabel.textContent = progress.label || 'Đang cập nhật...';
   elements.indexProgressPercent.textContent = `${Math.round(percent)}%`;
   elements.indexProgressFill.style.width = `${percent}%`;
@@ -1261,6 +1349,8 @@ function renderIndexProgress(progress, state = '') {
   elements.indexProgressDetail.textContent = detail;
   elements.indexProgressFile.textContent = progress.current_file || '';
   elements.indexProgressFile.title = progress.current_file || '';
+  veDongHoChiMuc();
+  batDongHoChiMuc();
 }
 
 // Dòng "đang theo dõi thư mục nóng" để người dùng biết tệp thả vào thư mục

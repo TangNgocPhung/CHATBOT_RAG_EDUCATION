@@ -187,9 +187,13 @@ def main(bao_tien_do=None):
 
     # --- Bước 3: Load vector store ---
     print("\nĐang load vector store hiện có...")
+    # Máy này 8 luồng CPU: mặc định Ollama chỉ lấy số lõi vật lý nên nhúng chậm
+    # hơn ~15%. RAG_EMBED_THREADS=8 ép dùng hết luồng; để trống thì giữ mặc định.
+    so_luong_nhung = int(os.getenv("RAG_EMBED_THREADS", "0")) or None
     embeddings = OllamaEmbeddings(
         model=os.getenv("RAG_EMBEDDING_MODEL", "bge-m3"),
         base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+        num_thread=so_luong_nhung,
     )
     vector_store = FAISS.load_local(
         DUONG_DAN_LUU_INDEX, embeddings, allow_dangerous_deserialization=True

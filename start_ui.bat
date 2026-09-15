@@ -2,6 +2,12 @@
 setlocal
 cd /d "%~dp0"
 
+rem Co dinh cong 8010. Khong dat thi run_ui.py lay cong trong dau tien tu
+rem 8000, ma cong 8000 tren may nay dang co ung dung khac chiem o IPv6 ->
+rem mo localhost:8000 se ra nham app. Neu 8010 bi chiem, ung dung bao loi
+rem ro rang thay vi im lang nhay sang cong khac.
+set "RAG_PORT=8010"
+
 rem Nap khoa Google Drive API neu co (xem khoa_api.mau.bat)
 if exist "khoa_api.bat" call "khoa_api.bat"
 

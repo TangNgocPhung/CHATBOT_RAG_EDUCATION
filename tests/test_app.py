@@ -246,7 +246,11 @@ class LuuTepDinhKemVaoKhoTests(unittest.TestCase):
             trang_thai, _ = service.luu_tep_vao_kho(self.tep_tai_len, "quy-che.txt")
 
         self.assertEqual(trang_thai, "tat")
-        self.assertFalse(os.path.exists(os.path.join(self.kho, THU_MUC_TEP_TRONG_KHO)))
+        # Kho phẳng thì thư mục đích chính là gốc kho (luôn tồn tại), nên bằng
+        # chứng "đã tắt" phải là không có tệp nào được chép vào, không phải là
+        # thư mục chưa được tạo.
+        self.assertFalse(os.path.exists(self._duong_dan_trong_kho("quy-che.txt")))
+        self.assertEqual(service.tep_cho_nap, [])
 
 
 class HookLuuKhoTests(unittest.TestCase):

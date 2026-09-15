@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="838" viewBox="0 0 1120 838">
+<rect width="1120" height="838" fill="#f4f6f8"/>
+<text x="40.0" y="44.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11" font-weight="600" fill="#7d8a97" letter-spacing="1.6">KHO TRI THỨC · CHATBOT RAG GIÁO DỤC</text>
+<text x="40.0" y="80.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="27" font-weight="600" fill="#101720">Cơ cấu 713 tài liệu trong kho</text>
+<text x="40.0" y="106.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="14" font-weight="400" fill="#4d5a68">Phân theo định dạng tệp và theo thể loại tài liệu</text>
+<text x="40.0" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">713</text>
+<text x="90.0" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">tệp trong kho</text>
+<text x="207.2" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">426</text>
+<text x="257.2" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">tệp PDF · 59,7%</text>
+<text x="387.2" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">193</text>
+<text x="437.2" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">tệp Word (DOCX + DOC) · 27,1%</text>
+<text x="656.8" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">100</text>
+<text x="706.8" y="150.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">đã lập chỉ mục · 613 chờ cập nhật</text>
+<line x1="40" y1="170" x2="1080" y2="170" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="192" width="1040" height="96" rx="10" fill="#ffffff" stroke="#dfe5ec"/>
+<text x="62.0" y="220.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="16" font-weight="600" fill="#101720">Hai nhóm nội dung</text>
+<rect x="62.0" y="236.0" width="736.6" height="20" rx="3" fill="#2a78d6"/>
+<rect x="800.6" y="236.0" width="257.4" height="20" rx="3" fill="#eb6834"/>
+<rect x="62.0" y="270.0" width="10.0" height="10" rx="2.5" fill="#2a78d6"/>
+<text x="78.0" y="279.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">Học liệu dạy học   528 tệp · 74,1%</text>
+<rect x="320.0" y="270.0" width="10.0" height="10" rx="2.5" fill="#eb6834"/>
+<text x="336.0" y="279.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">Văn bản pháp quy &amp; hành chính   185 tệp · 25,9%</text>
+<rect x="40" y="308" width="404" height="474" rx="10" fill="#ffffff" stroke="#dfe5ec"/>
+<rect x="468" y="308" width="612" height="474" rx="10" fill="#ffffff" stroke="#dfe5ec"/>
+<text x="62.0" y="338.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="16" font-weight="600" fill="#101720">Định dạng tệp</text>
+<text x="62.0" y="358.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#7d8a97">713 tệp · PDF chiếm gần ba phần năm kho</text>
+<text x="62.0" y="395.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">PDF</text>
+<rect x="128.0" y="384.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="384.0" width="232.0" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="395.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">426</text>
+<text x="422.0" y="409.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">59,7%</text>
+<text x="62.0" y="447.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">DOCX</text>
+<rect x="128.0" y="436.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="436.0" width="89.3" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="447.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">164</text>
+<text x="422.0" y="461.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">23,0%</text>
+<text x="62.0" y="499.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">PPTX</text>
+<rect x="128.0" y="488.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="488.0" width="39.2" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="499.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">72</text>
+<text x="422.0" y="513.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">10,1%</text>
+<text x="62.0" y="551.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">DOC</text>
+<rect x="128.0" y="540.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="540.0" width="15.8" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="551.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">29</text>
+<text x="422.0" y="565.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">4,1%</text>
+<text x="62.0" y="603.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">XLSX</text>
+<rect x="128.0" y="592.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="592.0" width="7.1" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="603.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">13</text>
+<text x="422.0" y="617.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">1,8%</text>
+<text x="62.0" y="655.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">MP4</text>
+<rect x="128.0" y="644.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="644.0" width="2.7" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="655.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">5</text>
+<text x="422.0" y="669.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">0,7%</text>
+<text x="62.0" y="707.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="13" font-weight="500" fill="#4d5a68">XLS</text>
+<rect x="128.0" y="696.0" width="232.0" height="15" rx="3" fill="#e6eaef"/>
+<rect x="128.0" y="696.0" width="2.2" height="15" rx="3" fill="#2a78d6"/>
+<text x="422.0" y="707.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="600" fill="#101720" text-anchor="end">4</text>
+<text x="422.0" y="721.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="10.5" font-weight="400" fill="#7d8a97" text-anchor="end">0,6%</text>
+<text x="490.0" y="338.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="16" font-weight="600" fill="#101720">Thể loại tài liệu</text>
+<text x="490.0" y="358.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#7d8a97">Màu thanh cho biết tài liệu thuộc nhóm nào</text>
+<rect x="490.0" y="382.0" width="9.0" height="9" rx="2.5" fill="#2a78d6"/>
+<text x="505.0" y="391.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="9.5" font-weight="600" fill="#7d8a97" letter-spacing="1.1">HỌC LIỆU DẠY HỌC · 528 TỆP</text>
+<text x="490.0" y="414.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Sách giáo khoa &amp; SBT</text>
+<rect x="696.0" y="405.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="405.0" width="306.0" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="414.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">302</text>
+<text x="490.0" y="434.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Kế hoạch bài dạy &amp; bài giảng</text>
+<rect x="696.0" y="425.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="425.0" width="153.0" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="434.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">151</text>
+<text x="490.0" y="454.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Học liệu khác &amp; biểu mẫu</text>
+<rect x="696.0" y="445.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="445.0" width="26.3" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="454.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">26</text>
+<text x="490.0" y="474.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Chương trình &amp; kế hoạch dạy học</text>
+<rect x="696.0" y="465.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="465.0" width="16.2" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="474.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">16</text>
+<text x="490.0" y="494.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Danh sách, thời khoá biểu</text>
+<rect x="696.0" y="485.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="485.0" width="13.2" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="494.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">13</text>
+<text x="490.0" y="514.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Sổ tay &amp; tài liệu hướng dẫn</text>
+<rect x="696.0" y="505.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="505.0" width="8.1" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="514.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">8</text>
+<text x="490.0" y="534.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Đề kiểm tra &amp; ma trận đặc tả</text>
+<rect x="696.0" y="525.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="525.0" width="7.1" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="534.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">7</text>
+<text x="490.0" y="554.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Video bài giảng</text>
+<rect x="696.0" y="545.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="545.0" width="5.1" height="13" rx="3" fill="#2a78d6"/>
+<text x="1068.0" y="554.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">5</text>
+<rect x="490.0" y="576.0" width="9.0" height="9" rx="2.5" fill="#eb6834"/>
+<text x="505.0" y="585.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="9.5" font-weight="600" fill="#7d8a97" letter-spacing="1.1">VĂN BẢN PHÁP QUY &amp; HÀNH CHÍNH · 185 TỆP</text>
+<text x="490.0" y="608.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Thông tư</text>
+<rect x="696.0" y="599.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="599.0" width="109.4" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="608.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">108</text>
+<text x="490.0" y="628.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Nghị định</text>
+<rect x="696.0" y="619.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="619.0" width="28.4" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="628.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">28</text>
+<text x="490.0" y="648.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Quyết định</text>
+<rect x="696.0" y="639.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="639.0" width="24.3" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="648.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">24</text>
+<text x="490.0" y="668.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Văn bản khác của Bộ, ngành</text>
+<rect x="696.0" y="659.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="659.0" width="9.1" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="668.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">9</text>
+<text x="490.0" y="688.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Công văn, thông báo</text>
+<rect x="696.0" y="679.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="679.0" width="6.1" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="688.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">6</text>
+<text x="490.0" y="708.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Chỉ thị</text>
+<rect x="696.0" y="699.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="699.0" width="4.1" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="708.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">4</text>
+<text x="490.0" y="728.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Nghị quyết</text>
+<rect x="696.0" y="719.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="719.0" width="4.1" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="728.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">4</text>
+<text x="490.0" y="748.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#4d5a68">Luật</text>
+<rect x="696.0" y="739.0" width="306.0" height="13" rx="3" fill="#e6eaef"/>
+<rect x="696.0" y="739.0" width="2.0" height="13" rx="3" fill="#eb6834"/>
+<text x="1068.0" y="748.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#101720" text-anchor="end">2</text>
+<text x="40.0" y="818.0" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11" font-weight="400" fill="#7d8a97">Nguồn: kho tài liệu của hệ thống, đọc qua /api/documents ngày 15/9/2026. Thể loại suy ra từ tên tệp và hồ sơ văn bản đã trích xuất.</text>
+</svg>

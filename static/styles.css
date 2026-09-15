@@ -215,14 +215,22 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .index-progress-heading span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .index-progress-heading strong { flex: 0 0 auto; color: var(--blue); font-size: 11px; }
 .index-progress-track { height: 7px; margin-top: 7px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
-.index-progress-track span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--blue), #58a6ff); border-radius: inherit; transition: width .35s ease; }
+.index-progress-track span { position: relative; display: block; overflow: hidden; width: 0; height: 100%; background: linear-gradient(90deg, var(--blue), #58a6ff); border-radius: inherit; transition: width .35s ease; }
+.index-progress-track span::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(115deg, rgba(255, 255, 255, .28) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .28) 50%, rgba(255, 255, 255, .28) 75%, transparent 75%); background-size: 14px 14px; animation: index-progress-stripes .9s linear infinite; }
+.index-progress-track.done span::after { display: none; }
 .index-progress-track.indeterminate span { animation: index-progress-running 1.35s ease-in-out infinite; }
+@keyframes index-progress-stripes {
+  from { background-position: 0 0; }
+  to { background-position: 14px 0; }
+}
 @keyframes index-progress-running {
   0% { transform: translateX(-115%); }
   50% { transform: translateX(95%); }
   100% { transform: translateX(285%); }
 }
-.index-progress-detail { margin-top: 6px; color: var(--ink-mute); font-size: 9.5px; line-height: 1.35; }
+.index-progress-time { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 6px; color: var(--ink-soft); font-size: 9.5px; font-variant-numeric: tabular-nums; }
+.index-progress-time span:last-child { flex: 0 0 auto; color: var(--ink-mute); }
+.index-progress-detail { margin-top: 4px; color: var(--ink-mute); font-size: 9.5px; line-height: 1.35; }
 .index-progress-file { margin-top: 3px; overflow: hidden; color: var(--ink-faint); font-size: 9.5px; text-overflow: ellipsis; white-space: nowrap; }
 .retry-button { margin-top: 10px; padding: 6px 9px; color: var(--danger-ink); background: var(--danger-soft); border: 1px solid var(--danger-line); border-radius: 7px; font-size: 10.5px; font-weight: 650; cursor: pointer; }
 .retry-button:hover { background: var(--danger-soft); }

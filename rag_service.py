@@ -62,7 +62,10 @@ DUONG_DAN_CAI_DAT = os.path.abspath(os.getenv(
 
 
 # Tệp người dùng đính kèm trong chat được chép về đây để thành tài liệu lâu dài.
-THU_MUC_TEP_TRONG_KHO = os.getenv(
+# Kho phẳng (mặc định) thì "đây" chính là gốc kho: người dùng chỉ phải nhìn một
+# thư mục duy nhất, kể cả tệp tải từ Drive lẫn tệp tự thêm trên giao diện.
+KHO_PHANG = os.getenv("RAG_KHO_PHANG", "1") == "1"
+THU_MUC_TEP_TRONG_KHO = "" if KHO_PHANG else os.getenv(
     "RAG_THU_MUC_TEP_DINH_KEM_TRONG_KHO", "tai_lieu_dinh_kem"
 )
 
@@ -665,8 +668,9 @@ class RAGService:
         shutil.copy2(duong_dan, dich)
         self.tep_cho_nap.append(os.path.basename(dich))
         self._hen_cap_nhat_chi_muc()
+        noi_luu = THU_MUC_TEP_TRONG_KHO or os.path.basename(DATA_PATH)
         return "da_luu", (
-            f"Đã thêm vào kho tài liệu ({THU_MUC_TEP_TRONG_KHO}), "
+            f"Đã thêm vào kho tài liệu ({noi_luu}), "
             "sẽ nạp vào chỉ mục khi máy rảnh."
         )
 
@@ -728,7 +732,8 @@ class RAGService:
                     return duong_dan
 
         # Tệp đính kèm của lượt trước có thể chưa kịp vào sổ (chỉ mục chạy sau),
-        # nên phải băm thêm chính thư mục này - vài chục tệp, đủ rẻ.
+        # nên phải băm thêm chính thư mục này. Kho phẳng thì đây là cả kho, song
+        # tệp đã vào sổ được bỏ qua ở trên nên chỉ băm phần chưa lập chỉ mục.
         thu_muc = os.path.join(DATA_PATH, THU_MUC_TEP_TRONG_KHO)
         if not os.path.isdir(thu_muc):
             return None
@@ -908,7 +913,12 @@ class RAGService:
 
         threading.Thread(target=vong_lap, daemon=True, name="rag-drive-auto").start()
 
-    def _retrieve(self, question: str, pham_vi: dict | None = None):
+    def _retrieve(self, question: str, pham_vi: dict | None = None,
+                  so_ket_qua: int | None = None):
+        """so_ket_qua để None là dùng SO_KET_QUA_CUOI - số đoạn thực sự đưa vào
+        prompt. Chỉ bộ đo MRR/Hit@K mới truyền số lớn hơn: muốn biết tài liệu
+        đúng nằm ở hạng mấy thì phải nhìn sâu hơn cửa sổ mà prompt dùng, chứ
+        cắt ở 4 thì mọi câu trượt đều trông giống nhau."""
         url = tim_url_trong_cau_hoi(question)
         if url:
             result = tai_va_trich_noi_dung(url)
@@ -930,8 +940,10 @@ class RAGService:
                 f"{no_text_source}. Hãy OCR tài liệu này rồi cập nhật lại chỉ mục."
             )
         return truy_hoi(
-            question, self.vector_store, self.bm25_retriever, SO_KET_QUA_CUOI,
+            question, self.vector_store, self.bm25_retriever,
+            so_ket_qua or SO_KET_QUA_CUOI,
             phan_loai_giao_duc.bo_loc_tu_pham_vi(pham_vi),
+            self.tu_vung,
         )
 
     @staticmethod

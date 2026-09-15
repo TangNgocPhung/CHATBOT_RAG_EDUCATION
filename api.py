@@ -13,6 +13,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
+import bao_ve_truy_cap
 import cache_ngu_nghia
 import lich_su_chat
 import phan_loai_giao_duc
@@ -62,6 +63,9 @@ ChatRequest.model_rebuild()
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    # Kiểm ngay lúc khởi động: bật chế độ công khai mà thiếu mật khẩu thì dừng
+    # hẳn, đừng để đường hầm mở ra rồi mới phát hiện cửa không khóa.
+    bao_ve_truy_cap.kiem_tra_cau_hinh()
     threading.Thread(
         target=service.initialize, daemon=True, name="rag-initialize"
     ).start()
@@ -75,6 +79,9 @@ app = FastAPI(
     redoc_url=None,
     lifespan=lifespan,
 )
+
+# Gắn trước mọi route, kể cả StaticFiles cuối tệp: đặt mật khẩu là chặn tất.
+bao_ve_truy_cap.gan_vao(app)
 
 
 @app.get("/api/status")

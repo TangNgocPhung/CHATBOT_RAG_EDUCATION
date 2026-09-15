@@ -54,6 +54,8 @@ ollama serve
 | `van_ban_meta.py` | Hồ sơ văn bản (số hiệu, ngày, cơ quan) và quan hệ thay thế/sửa đổi giữa các văn bản trong kho |
 | `api.py` + `rag_service.py` + `static/` | REST API (FastAPI, streaming NDJSON) và giao diện web |
 | `bo_cau_hoi_benchmark.json` | Bộ câu hỏi chuẩn dùng để đo chất lượng, chạy bằng `benchmark_chatbot.py --bo` |
+| `chi_so_ir.py` | Công thức chỉ số IR/QA: MRR, Hit@K, Recall@K, nDCG@K, MAP, khoảng tin cậy bootstrap |
+| `benchmark_chatbot.py --ir` | Đo xếp hạng truy hồi bằng bộ chỉ số trên, ghi `ket_qua_chi_so_ir.json` + `bang_chi_so_ir.md` |
 | `web_loader.py` | Đọc URL trực tiếp (độc lập với FAISS) + Web Context Compression |
 | `capnhat_tailieu_moi.py` | Cập nhật kho tài liệu incremental (chạy riêng, không phải lúc hỏi-đáp) |
 | `faiss_index_data_giao_duc/` | Vector store được build từ thư mục `data_giao_duc` |
@@ -176,6 +178,58 @@ Nguyên nhân TTFT cao: máy **không có GPU rời** (chỉ Intel UHD Graphics 
 - 5 case end-to-end: URL HTML tĩnh ✅, URL nhúng trong câu tự nhiên ✅, URL 404 ✅ (không gọi LLM), URL PDF ✅ (báo lỗi rõ, không gọi LLM), câu hỏi không URL ✅ (giữ nguyên pipeline V5).
 - Web Context Compression (BM25 top-3 đoạn liên quan câu hỏi): case Fibonacci (từ khóa ở 85% cuối trang 16.533 ký tự) → nén còn 647 ký tự, TTFT 85s→3.4s, **không mất thông tin**.
 - Test thêm với 2 URL giáo dục thật: phát hiện case SSL certificate lỗi (`thsp.edu.vn`) → đã thêm xử lý lỗi rõ ràng; phát hiện 1 generation-miss trên trang dạng danh sách thông báo (`hcmue.edu.vn`) → ghi nhận là giới hạn đã biết, chưa sửa.
+
+### 7.7. Chỉ số IR/QA của khối truy hồi (15/09/2026, kho 25.761 vector)
+Chạy `benchmark_chatbot.py --ir` trên 97 câu có nhãn nguồn đúng. Thứ hạng tính ở mức **tài liệu** (nhãn là một phần tên file), truy hồi sâu 24 chunk để nhìn quá cửa sổ 4 chunk đi vào prompt. Công thức nằm trong `chi_so_ir.py`, bảng đầy đủ ở `bang_chi_so_ir.md`.
+
+| Nhóm câu hỏi | Số câu | MRR@10 | Hit@1 | Hit@3 | Hit@5 | Hit@10 | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| chinh_sach_pdf | 50 | 0.890 | 88% | 90% | 90% | 90% | 0.893 |
+| van_ban_doc | 6 | 0.889 | 83% | 100% | 100% | 100% | 0.917 |
+| tai_lieu_docx | 14 | 0.821 | 71% | 93% | 93% | 93% | 0.794 |
+| bang_excel | 8 | 0.713 | 62% | 62% | 100% | 100% | 0.712 |
+| trinh_chieu | 14 | 0.631 | 43% | 86% | 86% | 86% | 0.655 |
+| video | 5 | 0.467 | 40% | 60% | 60% | 60% | 0.423 |
+| **Toàn bộ** | **97** | **0.806** | **74%** | **87%** | **90%** | **90%** | **0.806** |
+
+MRR@10 = 0.806 (KTC 95% bootstrap: 0.735 – 0.875), đo sau khi sửa reranker ở mục 7.8. Hạng trung bình khi trúng là 1.29; trượt hẳn 10/97 câu.
+
+Đọc bảng này thế nào:
+- **Nhóm văn bản pháp quy (PDF/DOC) đã tốt**: Hit@1 83-86%, gần như câu nào truy hồi ra được cũng đứng ngay đầu (MRR ≈ Hit@1).
+- **Nhóm `trinh_chieu` và `bang_excel` hỏng ở XẾP HẠNG, không ở tìm kiếm**: Hit@1 chỉ 29-38% nhưng Hit@5 lên 86-100%. Tài liệu đúng nằm sẵn trong rổ, chỉ bị các slide/sheet có nội dung na ná đẩy xuống. Đây là việc của reranker (`xep_hang_theo_lien_quan`), không phải của embedding.
+- **Nhóm `video` hỏng ở TÌM KIẾM**: Hit@10 cũng chỉ 60%, rerank không cứu được — 2/5 câu trượt là video không có lời thoại và bản phiên âm quá thưa từ khóa.
+- **Chênh với cửa sổ thật**: 90% câu có tài liệu đúng trong top-10, nhưng chỉ 81% còn giữ được khi cắt xuống 4 chunk đi vào prompt. Khoảng 9 điểm phần trăm đó là giá phải trả cho việc siết context để chạy CPU.
+- **Trần của Hit@10**: sau khử trùng nội dung và giới hạn 2 chunk mỗi nguồn, mỗi lượt chỉ còn trung bình 9,5 tài liệu riêng biệt, nên Hit@10 đã chạm trần cấu trúc của rổ ứng viên — muốn đo sâu hơn phải nới `SO_UNG_VIEN_MOI_RETRIEVER`, nhưng làm vậy là đo một hệ thống khác với hệ thống đang chạy.
+
+**Đo lúc máy đang bận thì số sai**: một lần chạy trong khi OCR nền đang chiếm I/O có 2 câu dính `ResponseError` lúc Ollama đọc blob model, bị tính thành trượt và kéo MRR từ 0.757 xuống 0.749. Công cụ nay tự loại các câu lỗi hạ tầng ra khỏi mẫu và báo riêng số lượng; lỗi giới hạn thật (PDF chưa OCR, video không lời thoại) thì vẫn tính là trượt vì người dùng thật cũng không nhận được câu trả lời. Dù vậy vẫn nên chạy đo khi kho đứng yên — hai lần chạy sạch cho đúng cùng một con số 0.757.
+
+So sánh với bản đo 12/09 (kho 8.827 vector, chỉ lưu 4 chunk): MRR 0.860, Hit@1 82%. Kho phình gấp 3 khiến MRR tụt ~0,1 — số tài liệu cạnh tranh nhiều lên thì xếp hạng khó lên theo. Tính lại chỉ số của một lần chạy cũ bất kỳ mà không phải chạy lại:
+
+```powershell
+.\.venv\Scripts\python.exe benchmark_chatbot.py --tu-tep ket_qua_benchmark_nhanh.json
+```
+
+### 7.8. Sửa reranker: chấm khớp tên tài liệu theo IDF (15/09/2026)
+Bảng 7.7 chỉ ra hai nhóm hỏng ở **xếp hạng** chứ không ở tìm kiếm (Hit@1 thấp nhưng Hit@5 cao). Đọc từng ca hỏng thì ra cùng một nguyên nhân: reranker chấm khớp tên tài liệu bằng cách **đếm từ trần**, nên "thời", "khóa", "biểu", "học" được tính ngang "k35", "hp3", "260tb". Tài liệu dài (sổ tay sinh viên, luật) chứa đủ các từ phổ biến nên chiếm hạng 1, đẩy đúng file người dùng hỏi xuống hạng 4-5.
+
+Sửa: thêm tín hiệu khớp tên tài liệu **cân theo IDF** dùng lại `TuVungKho` sẵn có (`_do_phu_tieu_de_idf` trong `hybrid_retrieval.py`), truyền `tu_vung` xuyên từ `RAGService._retrieve` xuống reranker. Hai chi tiết quyết định:
+- IDF luôn tra bằng từ **có dấu**; chỉ riêng phép đối chiếu khớp mới chấp nhận biến thể không dấu. Tra IDF bằng "hoc" thay cho "học" là tự bơm trọng số trần cho một từ cực phổ biến, vì "hoc" thường không nằm trong từ vựng kho.
+- **Giữ cả tín hiệu đếm cũ** thay vì thay thế. Quét trọng số cho thấy bỏ hẳn tín hiệu đếm làm nhóm văn bản pháp quy tụt Hit@1 86% → 82% (tên văn bản dài, mọi từ đều phổ biến nên IDF chấm gần như bằng nhau), giữ cả hai thì nhóm đó lên 88%.
+
+Trọng số `TRONG_SO_TIEU_DE = 0.035`, `TRONG_SO_TIEU_DE_IDF = 0.040` chọn từ bảng quét 25 tổ hợp, lấy **điểm giữa vùng phẳng** (mọi cặp trong khoảng 0.030-0.045 đều ra cùng kết quả) chứ không lấy đỉnh cao nhất — đỉnh nhọn trên 97 câu là dấu hiệu overfit vào chính bộ đề.
+
+| Chỉ số | Trước | Sau |
+|---|---|---|
+| MRR@10 toàn bộ | 0.757 | **0.806** |
+| Hit@1 toàn bộ | 68% | **74%** |
+| Hit@1 `bang_excel` | 38% | **62%** |
+| Hit@1 `trinh_chieu` | 29% | **43%** |
+| Hit@1 `tai_lieu_docx` | 64% | **71%** |
+| Hit@1 `chinh_sach_pdf` | 86% | **88%** |
+
+Kiểm định theo cặp trên cùng rổ ứng viên (bootstrap 5.000 lần trên hiệu từng câu): MRR +0.051, khoảng tin cậy 95% **+0.023 .. +0.085** (không chứa 0); **15 câu tốt lên, 0 câu xấu đi**. So khoảng tin cậy của hai lần đo riêng lẻ là sai ở đây — chúng chồng lấn nhau vì cùng dùng một bộ đề, phải so hiệu theo cặp.
+
+**Phần Hit@1 của `trinh_chieu` KHÔNG nên cố đẩy tiếp**: đọc 14 câu nhóm này thì phần lớn ca "sai" là kho có cả bản `.docx` (kế hoạch bài dạy) lẫn `.pptx` (slide) cho cùng một bài học, hệ thống trả bản `.docx` nhưng nhãn chỉ ghi tên file `.pptx`. Với câu hỏi "Bài X dạy gì?" thì bản `.docx` là câu trả lời hợp lệ ngang bản slide. Muốn con số đó lên nữa thì phải sửa **nhãn** (ghi nhận cả hai bản), không phải sửa reranker — dạy reranker ưu tiên `.pptx` chỉ là chiều theo bộ đề.
 
 ---
 

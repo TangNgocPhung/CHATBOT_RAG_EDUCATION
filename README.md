@@ -49,6 +49,18 @@ Sau khi thêm, sửa hoặc xóa tài liệu trong kho, có thể cập nhật c
 
 Kết quả OCR và sổ theo dõi giúp lần chạy tiếp theo tiếp tục mà không xử lý lại toàn bộ kho.
 
+## Đo chất lượng hệ thống
+
+Bộ câu hỏi chuẩn nằm ở `bo_cau_hoi_benchmark.json` (127 câu, trong đó 97 câu có nhãn nguồn đúng và 30 câu cố tình lạc đề).
+
+```powershell
+.\.venv\Scripts\python.exe benchmark_chatbot.py --ir
+```
+
+Chế độ `--ir` đo chất lượng **xếp hạng** của khối truy hồi bằng bộ chỉ số IR/QA kinh điển — MRR, Hit@K, Recall@K, nDCG@K, MAP (công thức nằm trong `chi_so_ir.py`). Không gọi LLM nên chạy vài phút, kết quả ghi ra `ket_qua_chi_so_ir.json` và bảng markdown `bang_chi_so_ir.md` để dán thẳng vào báo cáo.
+
+Hai chế độ còn lại: `--nhanh` đo truy hồi kèm cổng chặn lạc đề, `--bo` gọi đủ LLM để đo thêm trích dẫn và số liệu (chậm, khoảng 150 giây/câu trên CPU).
+
 ## Cấu hình Google Drive
 
 Sao chép `khoa_api.mau.bat` thành `khoa_api.bat`, sau đó điền khóa API của riêng bạn. `khoa_api.bat` đã được loại khỏi Git để tránh công khai khóa.

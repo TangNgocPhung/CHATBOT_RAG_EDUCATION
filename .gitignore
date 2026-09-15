@@ -7,6 +7,7 @@ venv/
 
 # Local secrets and machine-specific settings
 khoa_api.bat
+mat_khau.bat
 cai_dat.json
 .env
 .env.*
@@ -33,6 +34,9 @@ ho_so_van_ban.json
 meta_llm.json
 cache_cau_tra_loi.json
 ket_qua_benchmark*.json
+# Dữ liệu chạy thô của lần đo IR. Bảng tổng kết bang_chi_so_ir.md thì VẪN theo
+# dõi trong Git - đó là số liệu đưa vào báo cáo, cần xem lại được theo lịch sử.
+ket_qua_chi_so_ir.json
 *.db
 *.db-shm
 *.db-wal
@@ -43,3 +47,10 @@ ket_qua_benchmark*.json
 *.tmp.*
 *AppDataLocalTemp*
 
+
+# Ban sao luu va nhat ky truoc khi lap chi muc lo lon
+sao_luu_truoc_713/
+nhat_ky_lap_chi_muc/
+
+# Ban sao luu tu dong truoc khi gop kho (du lieu tho, khong theo doi)
+*.truoc-khi-gop-*

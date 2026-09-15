@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from langchain_core.documents import Document
 
+import tu_vung_kho
 from hybrid_retrieval import (
     rrf_fusion,
     tach_tu_tieng_viet,
@@ -95,6 +96,56 @@ class VietnameseRetrievalTests(unittest.TestCase):
             "Những trường hợp nào không được tổ chức dạy thêm?", documents, 2
         )
         self.assertTrue(result[0].metadata["article"].startswith("Điều 4"))
+
+    def test_reranker_uses_idf_so_rare_words_in_filename_outweigh_common_ones(self):
+        """
+        Ca thật đo được trên bộ 97 câu: "Lịch học học phần 3 khóa 35" từng xếp
+        sổ tay sinh viên trên đúng file thời khóa biểu, vì sổ tay dài nên chứa
+        đủ các từ phổ biến "thời/khóa/biểu/học", còn "k35", "hp3" - hai từ duy
+        nhất chỉ tài liệu cần - lại chỉ được tính ngang một từ thường.
+        """
+        cau_hoi = "Lịch học học phần 3 khóa 35 có bao nhiêu buổi mỗi tuần?"
+        so_tay = Document(
+            page_content="Sổ tay giới thiệu lịch học, học phần, thời khóa biểu, "
+                         "buổi học mỗi tuần của toàn khóa.",
+            metadata={"source_file": "SO TAY SINH VIEN K51.docx", "_rrf_score": 0.03},
+        )
+        tkb = Document(
+            page_content="Thời khóa biểu chi tiết.",
+            metadata={"source_file": "Thoi-khoa-bieu-HP3-K35-web.xlsx",
+                      "_rrf_score": 0.03},
+        )
+        # Từ vựng giả lập một kho mà "học/lịch/buổi/tuần" xuất hiện khắp nơi
+        # còn "k35"/"hp3" chỉ có ở đúng một tài liệu.
+        tu_vung = tu_vung_kho.TuVungKho(
+            tan_suat={"lịch": 900, "học": 2000, "phần": 800, "khóa": 900,
+                      "buổi": 700, "tuần": 700, "bao": 500, "nhiêu": 500,
+                      "mỗi": 600, "k35": 1, "hp3": 1},
+            so_chunk=2000,
+        )
+        khong_idf = xep_hang_theo_lien_quan(cau_hoi, [so_tay, tkb], 2)
+        co_idf = xep_hang_theo_lien_quan(cau_hoi, [so_tay, tkb], 2, tu_vung)
+        self.assertEqual(khong_idf[0].metadata["source_file"], "SO TAY SINH VIEN K51.docx")
+        self.assertEqual(co_idf[0].metadata["source_file"], "Thoi-khoa-bieu-HP3-K35-web.xlsx")
+
+    def test_reranker_khong_tu_bom_trong_so_cho_bien_the_khong_dau(self):
+        """
+        Tên file trong kho hay viết không dấu, nên khớp phải chấp nhận "hoc" cho
+        "học". Nhưng IDF thì luôn tra bằng từ CÓ DẤU: "hoc" thường không nằm
+        trong từ vựng kho, mà từ lạ lại nhận IDF trần - lấy nhầm sẽ biến một từ
+        cực phổ biến thành từ quý hiếm và lật ngược cả bảng xếp hạng.
+        """
+        tu_vung = tu_vung_kho.TuVungKho(
+            tan_suat={"học": 2000, "sinh": 1500, "tiểu": 900}, so_chunk=2000)
+        cau_hoi = "học sinh tiểu học"
+        khong_dau = Document(
+            page_content="nội dung",
+            metadata={"source_file": "hoc-sinh-tieu-hoc.pdf", "_rrf_score": 0.02})
+        xep_hang_theo_lien_quan(cau_hoi, [khong_dau], 1, tu_vung)
+        # Mọi từ của câu hỏi đều phổ biến, nên dù tên file khớp trọn vẹn thì
+        # phần điểm cộng từ tín hiệu IDF vẫn phải nhỏ hơn trần trọng số.
+        diem_cong = khong_dau.metadata["_retrieval_score"] - 0.02
+        self.assertLess(diem_cong, 0.08)
 
     def test_broad_summary_can_use_more_chunks_from_one_source(self):
         documents = [

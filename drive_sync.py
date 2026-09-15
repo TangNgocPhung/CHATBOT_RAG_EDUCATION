@@ -58,6 +58,17 @@ API_KEY = os.getenv("RAG_DRIVE_API_KEY", "").strip()
 # Video lớn tải rất lâu; mặc định vẫn tải nhưng có ngưỡng chặn để không treo máy.
 GIOI_HAN_MB = int(os.getenv("RAG_DRIVE_MAX_MB", "2048"))
 
+# Kho phẳng: mọi tài liệu nằm chung một thư mục thay vì soi theo cây thư mục
+# của Drive. Tên tệp trong kho vốn đã phải là duy nhất (resolve_source_file từ
+# chối mở nguồn khi hai thư mục trùng tên), nên bỏ thư mục con không mất gì mà
+# người dùng chỉ phải nhìn một chỗ. Đặt RAG_KHO_PHANG=0 để giữ cây thư mục cũ.
+KHO_PHANG = os.getenv("RAG_KHO_PHANG", "1") == "1"
+
+
+def duong_dan_dich(ten: str, thu_muc_con: str) -> str:
+    """Nơi cất một tệp tải từ Drive về, tùy chế độ kho phẳng hay cây thư mục."""
+    return os.path.join(DATA_PATH, "" if KHO_PHANG else thu_muc_con, ten)
+
 # Tải liên tục hàng trăm file làm Google chặn tạm IP ("your computer or network
 # may be sending automated queries", HTTP 403). Nghỉ giữa các lần tải và chờ dài
 # rồi thử lại thì đi hết kho mà không bị chặn.
@@ -387,7 +398,7 @@ def dong_bo(
             ket_qua.bo_qua.append(f"{ten} (>{GIOI_HAN_MB}MB)")
             continue
 
-        dich = os.path.join(DATA_PATH, muc.get("thu_muc", ""), ten)
+        dich = duong_dan_dich(ten, muc.get("thu_muc", ""))
         ban_ghi = trang_thai.get(ma_file) or {}
         van_con = os.path.exists(dich)
         giong_nhau = (
