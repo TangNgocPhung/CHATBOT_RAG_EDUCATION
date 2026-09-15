@@ -1238,6 +1238,10 @@ const tienDoChiMuc = {
   conLai: null,    // giây còn lại, đã làm mượt
   troiLucUoc: 0,   // số giây đã trôi tại lần ước tính gần nhất
   dangChay: false,
+  giaiDoan: '',    // stage đang chạy; đổi giai đoạn là đặt lại mốc đo nhịp
+  mocTroi: 0,      // số giây đã trôi khi bước vào giai đoạn hiện tại
+  mocPercent: 0,   // phần trăm tại thời điểm bước vào giai đoạn đó
+  phanTram: 0,     // phần trăm ở lần poll gần nhất, để đồng hồ tự biết sắp xong
 };
 let dongHoChiMuc = null;
 
@@ -1265,7 +1269,12 @@ function veDongHoChiMuc() {
   const troi = (Date.now() - tienDoChiMuc.moc) / 1000;
   elements.indexProgressElapsed.textContent = `Đã chạy ${dinhDangKhoangThoiGian(troi)}`;
   if (tienDoChiMuc.conLai == null) {
-    elements.indexProgressEta.textContent = 'Đang ước tính thời gian còn lại...';
+    // Các giai đoạn cuối (lưu chỉ mục, nạp lại kho) mỗi cái chỉ vài phần trăm
+    // và luôn bị đặt lại mốc đo, nên sẽ không bao giờ kịp có ước tính. Nói
+    // thẳng "sắp xong" đúng hơn là bắt người dùng đọc "đang ước tính".
+    elements.indexProgressEta.textContent = tienDoChiMuc.phanTram >= 95
+      ? 'Sắp xong'
+      : 'Đang ước tính thời gian còn lại...';
     return;
   }
   // Trừ dần theo giây thật để con số đếm ngược mượt giữa hai lần poll.
@@ -1287,14 +1296,33 @@ function dungDongHoChiMuc() {
   tienDoChiMuc.dangChay = false;
 }
 
-// Ước tính thời gian còn lại từ nhịp đã đi được, làm mượt để con số không nhảy
-// giật mỗi lần một tệp lớn xong.
-function capNhatUocTinh(percent, troi) {
-  if (percent < 3 || troi < 20) {
+// Ước tính thời gian còn lại theo nhịp CỦA GIAI ĐOẠN ĐANG CHẠY, làm mượt để
+// con số không nhảy giật mỗi lần một tệp lớn xong.
+//
+// Bản trước ngoại suy thẳng từ tổng thời gian: troi * (100 - percent) / percent.
+// Cách đó sai nặng vì các giai đoạn chạy ở tốc độ khác hẳn nhau - đọc/OCR nằm
+// trong dải 5-50%, nhúng vector nằm trong dải 50-95% - nên nhịp của giai đoạn
+// trước không nói được gì về giai đoạn sau. Đo thực tế: sau 13 giờ OCR, vừa
+// bước sang phần nhúng ở 50,5% thì công thức cũ báo "còn 12 giờ 47 phút", tức
+// chỉ đang nói "nửa sau lâu bằng nửa đầu" chứ chưa hề đo tốc độ nhúng.
+function capNhatUocTinh(percent, troi, giaiDoan) {
+  if (giaiDoan !== tienDoChiMuc.giaiDoan) {
+    tienDoChiMuc.giaiDoan = giaiDoan;
+    tienDoChiMuc.mocTroi = troi;
+    tienDoChiMuc.mocPercent = percent;
+    // Nhịp của giai đoạn cũ không còn giá trị: thà hiện "đang ước tính" vài
+    // chục giây còn hơn hiện một con số sai.
     tienDoChiMuc.conLai = null;
     return;
   }
-  const thoNhap = troi * (100 - percent) / percent;
+  const dtTroi = troi - tienDoChiMuc.mocTroi;
+  const dtPercent = percent - tienDoChiMuc.mocPercent;
+  // Phải đi đủ xa trong chính giai đoạn này mới có nhịp đáng tin. Ngưỡng lấy
+  // theo thời gian là chính: một tệp SGK chỉ chiếm 0,26% của dải nhúng, đòi
+  // hỏi nhiều phần trăm thì người dùng phải chờ hàng giờ mới thấy con số đầu
+  // tiên. Một phút mẫu kèm bộ làm mượt 0,7/0,3 là đủ để số không nhảy loạn.
+  if (dtTroi < 60 || dtPercent < 0.05) return;
+  const thoNhap = dtTroi * (100 - percent) / dtPercent;
   tienDoChiMuc.conLai = tienDoChiMuc.conLai == null
     ? thoNhap
     : tienDoChiMuc.conLai * 0.7 + thoNhap * 0.3;
@@ -1309,6 +1337,10 @@ function renderIndexProgress(progress, state = '') {
     dungDongHoChiMuc();
     tienDoChiMuc.moc = 0;
     tienDoChiMuc.conLai = null;
+    tienDoChiMuc.giaiDoan = '';
+    tienDoChiMuc.mocTroi = 0;
+    tienDoChiMuc.mocPercent = 0;
+    tienDoChiMuc.phanTram = 0;
     return;
   }
   if (legacyUpdate) {
@@ -1337,7 +1369,8 @@ function renderIndexProgress(progress, state = '') {
   // hiệu số elapsed_seconds thì luôn đúng.
   tienDoChiMuc.moc = Date.now() - troi * 1000;
   tienDoChiMuc.dangChay = true;
-  capNhatUocTinh(percent, troi);
+  tienDoChiMuc.phanTram = percent;
+  capNhatUocTinh(percent, troi, String(progress.stage || ''));
 
   elements.indexProgress.classList.remove('hidden');
   elements.indexProgressTrack.classList.remove('indeterminate');

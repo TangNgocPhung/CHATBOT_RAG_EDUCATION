@@ -304,13 +304,26 @@ def main(bao_tien_do=None):
     for thu_tu, (duong_dan, chunks) in enumerate(
         tqdm(chunks_theo_file.items(), desc="Embedding theo file", unit="file"), 1
     ):
-        bao(
-            stage="embedding", label="Đang tạo vector tìm kiếm...",
-            percent=round(50 + 45 * (thu_tu - 1) / max(1, tong_file_embedding), 1),
-            completed=thu_tu - 1, total=tong_file_embedding, unit="tệp",
-            current_file=os.path.basename(duong_dan),
-            detail=f"Đang nhúng {len(chunks)} đoạn văn bản",
-        )
+        ten_file_embed = os.path.basename(duong_dan)
+        tong_doan = len(chunks)
+
+        def bao_embed(da_nhung, *, _thu_tu=thu_tu, _ten=ten_file_embed, _tong=tong_doan):
+            """Báo tiến độ NGAY TRONG một tệp, giống bao_ocr ở bước đọc.
+
+            Một tệp sách giáo khoa có vài trăm đoạn và mất hàng chục phút; nếu
+            chỉ báo mỗi tệp một lần thì thanh tiến độ đứng im suốt thời gian đó
+            và người dùng tưởng ứng dụng treo."""
+            ty_le_file = da_nhung / max(1, _tong)
+            ty_le = ((_thu_tu - 1) + ty_le_file) / max(1, tong_file_embedding)
+            bao(
+                stage="embedding", label="Đang tạo vector tìm kiếm...",
+                percent=round(50 + 45 * ty_le, 1),
+                completed=_thu_tu - 1, total=tong_file_embedding, unit="tệp",
+                current_file=_ten,
+                detail=f"Đã nhúng {da_nhung}/{_tong} đoạn văn bản",
+            )
+
+        bao_embed(0)
         chunk_ids_moi = []
         loi_embed = None
         for i in range(0, len(chunks), KICH_THUOC_BATCH):
@@ -326,6 +339,7 @@ def main(bao_tien_do=None):
                     chunk_ids_moi = []
                 break
             chunk_ids_moi.extend(ids_batch)
+            bao_embed(min(i + KICH_THUOC_BATCH, tong_doan))
 
         if loi_embed:
             # KHÔNG ghi vào sổ: lỗi hạ tầng là tạm thời, không ghi thì lần chạy
