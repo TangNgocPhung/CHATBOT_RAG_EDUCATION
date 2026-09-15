@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1106" viewBox="0 0 1120 1106">
+<rect width="1120" height="1106" fill="#f4f6f8"/>
+<text x="40" y="44" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11" font-weight="600" fill="#7d8a97" letter-spacing="1.6">CÔNG NGHỆ SỬ DỤNG · CHATBOT RAG GIÁO DỤC</text>
+<text x="40" y="80" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="27" font-weight="600" fill="#101720">Các công nghệ xây dựng phần mềm</text>
+<text x="40" y="106" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="14" font-weight="400" fill="#4d5a68">Tám lớp, từ giao diện tới hạ tầng · toàn bộ mô hình chạy cục bộ trên CPU</text>
+<text x="40" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">8</text>
+<text x="62.9" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">lớp công nghệ</text>
+<text x="280" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">100%</text>
+<text x="340.9" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">mô hình chạy cục bộ</text>
+<text x="520" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="23" font-weight="600" fill="#101720">0</text>
+<text x="542.9" y="150" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="400" fill="#4d5a68">chi phí gọi API mô hình</text>
+<line x1="40" y1="170" x2="1080" y2="170" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="196" width="740" height="147" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="210" width="4" height="119" rx="2" fill="#2a78d6"/>
+<rect x="62" y="214" width="22" height="22" rx="7" fill="#eaf2fc"/>
+<text x="73" y="229.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#2a78d6" text-anchor="middle">1</text>
+<text x="94" y="230" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Giao diện người dùng</text>
+<text x="62" y="252" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Trang tĩnh do chính FastAPI phục vụ · không framework, không tải thư viện từ CDN</text>
+<rect x="62.0" y="262" width="66.5" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="95.2" y="279.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">HTML5</text>
+<rect x="136.5" y="262" width="175.6" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="224.3" y="279.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">CSS3 (biến CSS, sáng/tối)</text>
+<rect x="320.1" y="262" width="155.9" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="398.0" y="279.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">JavaScript ES6 thuần</text>
+<rect x="483.9" y="262" width="171.4" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="569.7" y="279.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Fetch + ReadableStream</text>
+<rect x="62.0" y="297" width="100.2" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="112.1" y="314.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">localStorage</text>
+<rect x="170.2" y="297" width="107.2" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="223.8" y="314.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">SVG nội tuyến</text>
+<rect x="285.4" y="297" width="201.1" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="385.9" y="314.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Responsive (desktop · mobile)</text>
+<rect x="40" y="359" width="740" height="112" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="373" width="4" height="84" rx="2" fill="#2a78d6"/>
+<rect x="62" y="377" width="22" height="22" rx="7" fill="#eaf2fc"/>
+<text x="73" y="392.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#2a78d6" text-anchor="middle">2</text>
+<text x="94" y="393" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Máy chủ &amp; API</text>
+<text x="62" y="415" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">REST cho quản trị kho, luồng NDJSON phát câu trả lời theo từng token</text>
+<rect x="62.0" y="425" width="94.4" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="109.2" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Python 3.11</text>
+<rect x="164.4" y="425" width="72.7" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="200.8" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">FastAPI</text>
+<rect x="245.1" y="425" width="69.6" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="279.9" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Uvicorn</text>
+<rect x="322.7" y="425" width="93.8" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="369.6" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Pydantic v2</text>
+<rect x="424.5" y="425" width="203.2" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="526.1" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">StreamingResponse (NDJSON)</text>
+<rect x="635.7" y="425" width="113.1" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="692.2" y="442.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">threading (nền)</text>
+<rect x="40" y="487" width="740" height="182" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="501" width="4" height="154" rx="2" fill="#2a78d6"/>
+<rect x="62" y="505" width="22" height="22" rx="7" fill="#eaf2fc"/>
+<text x="73" y="520.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#2a78d6" text-anchor="middle">3</text>
+<text x="94" y="521" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Lõi RAG</text>
+<text x="62" y="543" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Truy hồi lai FAISS + BM25, sinh câu trả lời hoàn toàn cục bộ qua Ollama</text>
+<rect x="62.0" y="553" width="84.5" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="104.2" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">LangChain</text>
+<rect x="154.5" y="553" width="64.1" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="186.6" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Ollama</text>
+<rect x="226.6" y="553" width="113.6" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="283.4" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">bge-m3 (nhúng)</text>
+<rect x="348.2" y="553" width="126.9" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="411.6" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">llama3.2:3b (sinh)</text>
+<rect x="483.1" y="553" width="129.9" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="548.0" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">FAISS (faiss-cpu)</text>
+<rect x="620.9" y="553" width="133.5" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="687.7" y="570.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">BM25 (rank_bm25)</text>
+<rect x="62.0" y="588" width="91.8" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="107.9" y="605.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Truy hồi lai</text>
+<rect x="161.8" y="588" width="190.5" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="257.0" y="605.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Mở rộng truy vấn tiếng Việt</text>
+<rect x="360.3" y="588" width="120.3" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="420.4" y="605.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Cache ngữ nghĩa</text>
+<rect x="488.5" y="588" width="152.2" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="564.6" y="605.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">trafilatura (đọc URL)</text>
+<rect x="62.0" y="623" width="191.6" height="26" rx="6" fill="#eaf2fc" stroke="#2a78d6" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="157.8" y="640.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#2a78d6" text-anchor="middle">Kiểm tra trích dẫn &amp; số liệu</text>
+<rect x="40" y="685" width="740" height="182" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="699" width="4" height="154" rx="2" fill="#eb6834"/>
+<rect x="62" y="703" width="22" height="22" rx="7" fill="#fdeee7"/>
+<text x="73" y="718.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#eb6834" text-anchor="middle">4</text>
+<text x="94" y="719" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Nạp &amp; xử lý tài liệu</text>
+<text x="62" y="741" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Đưa PDF, Office, ảnh scan và video về văn bản rồi chia đoạn theo cấu trúc</text>
+<rect x="62.0" y="751" width="57.4" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="90.7" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">pypdf</text>
+<rect x="127.4" y="751" width="77.8" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="166.3" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">docx2txt</text>
+<rect x="213.2" y="751" width="97.6" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="262.0" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">python-pptx</text>
+<rect x="318.8" y="751" width="113.1" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="375.3" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">openpyxl · xlrd</text>
+<rect x="439.9" y="751" width="64.1" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="471.9" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">pandas</text>
+<rect x="512.0" y="751" width="104.3" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="564.1" y="768.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">unstructured</text>
+<rect x="62.0" y="786" width="143.2" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="133.6" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Tesseract OCR (vie)</text>
+<rect x="213.2" y="786" width="85.8" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="256.1" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">pypdfium2</text>
+<rect x="307.0" y="786" width="118.9" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="366.4" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">faster-whisper</text>
+<rect x="433.9" y="786" width="55.4" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="461.6" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">PyAV</text>
+<rect x="497.3" y="786" width="146.2" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="570.4" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">pywin32 (COM Word)</text>
+<rect x="651.6" y="786" width="95.1" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="699.1" y="803.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">LibreOffice</text>
+<rect x="62.0" y="821" width="140.8" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="132.4" y="838.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Google Drive API v3</text>
+<rect x="210.8" y="821" width="165.3" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="293.4" y="838.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Chia đoạn theo cấu trúc</text>
+<rect x="40" y="883" width="740" height="147" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="40" y="897" width="4" height="119" rx="2" fill="#eb6834"/>
+<rect x="62" y="901" width="22" height="22" rx="7" fill="#fdeee7"/>
+<text x="73" y="916.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#eb6834" text-anchor="middle">5</text>
+<text x="94" y="917" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Lưu trữ</text>
+<text x="62" y="939" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Không cần máy chủ CSDL: chỉ mục, sổ ghi chép và lịch sử đều nằm trên đĩa</text>
+<rect x="62.0" y="949" width="114.4" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="119.2" y="966.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Chỉ mục FAISS</text>
+<rect x="184.4" y="949" width="149.4" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="259.1" y="966.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">SQLite (lịch sử chat)</text>
+<rect x="341.8" y="949" width="178.8" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="431.2" y="966.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">JSON (hồ sơ · sổ theo dõi)</text>
+<rect x="528.6" y="949" width="154.0" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="605.6" y="966.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Cache OCR · phiên âm</text>
+<rect x="62.0" y="984" width="156.2" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="140.1" y="1001.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Thư mục tệp đính kèm</text>
+<rect x="226.2" y="984" width="193.1" height="26" rx="6" fill="#fdeee7" stroke="#eb6834" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="322.8" y="1001.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#eb6834" text-anchor="middle">Hash tệp (cập nhật tăng dần)</text>
+<rect x="804" y="196" width="276" height="232" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="804" y="210" width="4" height="204" rx="2" fill="#1baf7a"/>
+<rect x="826" y="214" width="22" height="22" rx="7" fill="#e7f7f1"/>
+<text x="837" y="229.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#1baf7a" text-anchor="middle">6</text>
+<text x="858" y="230" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Đo lường chất lượng</text>
+<text x="826" y="252" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Bộ 127 câu hỏi chuẩn, đo bằng chỉ số IR</text>
+<text x="826" y="267" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">kinh điển</text>
+<rect x="826.0" y="277" width="51.2" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="851.6" y="294.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">MRR</text>
+<rect x="885.2" y="277" width="57.8" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="914.1" y="294.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Hit@K</text>
+<rect x="951.0" y="277" width="75.0" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="988.5" y="294.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Recall@K</text>
+<rect x="826.0" y="312" width="70.4" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="861.2" y="329.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">nDCG@K</text>
+<rect x="904.4" y="312" width="51.2" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="930.0" y="329.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">MAP</text>
+<rect x="826.0" y="347" width="121.3" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="886.7" y="364.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Cổng chặn lạc đề</text>
+<rect x="826.0" y="382" width="129.2" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="890.6" y="399.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">pytest · unittest</text>
+<rect x="804" y="444" width="276" height="267" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="804" y="458" width="4" height="239" rx="2" fill="#1baf7a"/>
+<rect x="826" y="462" width="22" height="22" rx="7" fill="#e7f7f1"/>
+<text x="837" y="477.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#1baf7a" text-anchor="middle">7</text>
+<text x="858" y="478" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">Vận hành &amp; triển khai</text>
+<text x="826" y="500" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Chạy được trên máy cá nhân lẫn máy chủ</text>
+<text x="826" y="515" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">riêng</text>
+<rect x="826.0" y="525" width="147.4" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="899.7" y="542.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Windows 10/11 (.bat)</text>
+<rect x="826.0" y="560" width="94.3" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="873.2" y="577.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Ubuntu VPS</text>
+<rect x="928.3" y="560" width="74.9" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="965.8" y="577.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">systemd</text>
+<rect x="826.0" y="595" width="111.9" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="881.9" y="612.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Caddy (HTTPS)</text>
+<rect x="945.9" y="595" width="110.8" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="1001.2" y="612.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">ufw · fail2ban</text>
+<rect x="826.0" y="630" width="129.6" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="890.8" y="647.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Cloudflare Tunnel</text>
+<rect x="826.0" y="665" width="97.7" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="874.8" y="682.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Git · GitHub</text>
+<rect x="804" y="727" width="276" height="287" rx="10" fill="#ffffff" stroke="#dfe5ec" stroke-width="1"/>
+<rect x="804" y="741" width="4" height="259" rx="2" fill="#1baf7a"/>
+<rect x="826" y="745" width="22" height="22" rx="7" fill="#e7f7f1"/>
+<text x="837" y="760.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="600" fill="#1baf7a" text-anchor="middle">8</text>
+<text x="858" y="761" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="15.5" font-weight="600" fill="#101720">An toàn &amp; quyền riêng tư</text>
+<text x="826" y="783" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11.5" font-weight="400" fill="#7d8a97">Khóa cửa trước khi đưa ra Internet</text>
+<rect x="826.0" y="793" width="125.2" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="888.6" y="810.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">HTTP Basic Auth</text>
+<rect x="826.0" y="828" width="153.6" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="902.8" y="845.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">hmac.compare_digest</text>
+<rect x="826.0" y="863" width="177.6" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="914.8" y="880.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Chặn IP nội bộ khi tải URL</text>
+<rect x="826.0" y="898" width="159.7" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="905.8" y="915.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Giới hạn dung lượng tệp</text>
+<rect x="826.0" y="933" width="214.4" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="933.2" y="950.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Từ chối chạy nếu thiếu mật khẩu</text>
+<rect x="826.0" y="968" width="179.6" height="26" rx="6" fill="#e7f7f1" stroke="#1baf7a" stroke-width="0.7" stroke-opacity="0.35"/>
+<text x="915.8" y="985.5" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12.5" font-weight="500" fill="#1baf7a" text-anchor="middle">Dữ liệu riêng không lên Git</text>
+<text x="40" y="1072" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="12" font-weight="400" fill="#7d8a97">Chỉ đồng bộ Google Drive cần Internet; hỏi đáp, nhúng, OCR và phiên âm đều chạy offline.</text>
+</svg>
