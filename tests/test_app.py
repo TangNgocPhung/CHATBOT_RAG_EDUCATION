@@ -184,6 +184,42 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["documents"][0]["name"], "tai-lieu.txt")
         self.assertNotIn(directory, response.text)
 
+    def test_mtime_bi_tar_cat_le_giay_van_tinh_la_da_lap_chi_muc(self):
+        """Đẩy kho lên VPS bằng tar thì mtime mất phần lẻ nano-giây. Nếu so
+        nguyên nano-giây thì cả kho hiện 'chờ xử lý' và banner 'cần cập nhật
+        chỉ mục' không bao giờ tắt, dù nội dung không đổi."""
+        with tempfile.TemporaryDirectory() as directory:
+            data_directory = os.path.join(directory, "data")
+            os.mkdir(data_directory)
+            source_path = os.path.join(data_directory, "tai-lieu.txt")
+            with open(source_path, "w", encoding="utf-8") as source:
+                source.write("Nội dung đã lập chỉ mục")
+            thong_tin = os.stat(source_path)
+            # Sổ ghi chép giữ mtime gốc có phần lẻ, trên đĩa chỉ còn tròn giây.
+            mtime_tron_giay = thong_tin.st_mtime_ns // 1_000_000_000 * 1_000_000_000
+            os.utime(source_path, ns=(mtime_tron_giay, mtime_tron_giay))
+            ledger_path = os.path.join(directory, "ledger.json")
+            with open(ledger_path, "w", encoding="utf-8") as ledger:
+                json.dump(
+                    {
+                        source_path: {
+                            "status": "processed",
+                            "size": thong_tin.st_size,
+                            "modified_ns": mtime_tron_giay + 123_456_789,
+                        }
+                    },
+                    ledger,
+                )
+            with (
+                patch("rag_service.DATA_PATH", data_directory),
+                patch("rag_service.DUONG_DAN_SO_GHI_CHEP", ledger_path),
+            ):
+                response = self.client.get("/api/documents")
+        self.assertEqual(response.status_code, 200)
+        summary = response.json()["summary"]
+        self.assertEqual(summary["pending"], 0)
+        self.assertEqual(summary["processed"], 1)
+
 
 class LuuTepDinhKemVaoKhoTests(unittest.TestCase):
     """Tệp đính kèm trong chat phải thành tài liệu lâu dài trong kho."""

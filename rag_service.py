@@ -116,6 +116,20 @@ def _phut_tu_dong_dong_bo() -> int:
         return 15
 
 
+def _mtime_da_doi(ghi_trong_so: int | None, tren_dia_ns: int) -> bool:
+    """So mốc sửa đổi ở mức GIÂY chứ không phải nano-giây.
+
+    tar định dạng mặc định chỉ chép mtime theo giây. Sau khi đẩy kho tài liệu
+    lên VPS, mọi tệp đều mất phần lẻ nano-giây nên trông như vừa bị sửa, trong
+    khi sổ ghi chép đẩy từ Windows sang vẫn giữ nguyên phần lẻ đó. Bộ cập nhật
+    thật so theo SHA-256 nên không embed lại gì, nhưng phần thống kê thì báo
+    "cần cập nhật chỉ mục" mãi không tắt. Cắt về giây vẫn đủ nhạy để bắt tệp
+    sửa thật - lưu lại một tệp không bao giờ trùng đúng giây cũ."""
+    if ghi_trong_so is None:
+        return False
+    return ghi_trong_so // 1_000_000_000 != tren_dia_ns // 1_000_000_000
+
+
 @dataclass
 class ServiceStatus:
     state: str = "starting"
@@ -360,10 +374,7 @@ class RAGService:
                 if record.get("size") is not None and record["size"] != size:
                     data_stale = True
                     break
-                if (
-                    record.get("modified_ns") is not None
-                    and record["modified_ns"] != modified_ns
-                ):
+                if _mtime_da_doi(record.get("modified_ns"), modified_ns):
                     data_stale = True
                     break
 
@@ -1076,10 +1087,7 @@ class RAGService:
                 status = record.get("status", "processed")
                 if (
                     (record.get("size") is not None and record["size"] != stat.st_size)
-                    or (
-                        record.get("modified_ns") is not None
-                        and record["modified_ns"] != stat.st_mtime_ns
-                    )
+                    or _mtime_da_doi(record.get("modified_ns"), stat.st_mtime_ns)
                 ):
                     status = "pending"
             if status not in status_counts:
